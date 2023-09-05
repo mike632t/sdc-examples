@@ -3,7 +3,8 @@
  *
  * Copyright(C) 2023   MT
  *
- * Demonstrates how to call some of the common math functions using SDCC.
+ * Demonstrates  how to call low level assembler routines in SDCC and print
+ * an integer value without using printf(). 
  *
  * sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0.rel sdc-cpm.rel sdc-add.c
  *
@@ -11,7 +12,7 @@
  * 
  * With sdcc 4.0.0 this code is 3764 bytes long and takes aproximatly 69 ms
  * to execute (at 4Mhz), upgrading to sdcc 4.2.0 reduces this to 3265 bytes
- * 49 ms!
+ * and 49 ms!
  *
  * This  program is free software: you can redistribute it and/or modify it
  * under  the terms of the GNU General Public License as published  by  the
@@ -37,6 +38,27 @@
 
 #include <stdio.h>
 #include "sdc-cpm.h"
+
+void putint(int i_number)
+{
+   if (i_number < 0) 
+   {
+      i_number *= -1;
+      putchar('-');
+   }
+   if (i_number > 9) 
+   {
+      putint(i_number / 10);
+   }
+   putchar('0'+ (i_number % 10));
+}
+
+void puti(int i_number)
+{
+   putint(i_number);
+   putchar('\n');
+}
+
 /* 
  * Calling convention
  * 
@@ -97,5 +119,5 @@ int Add_Int(int i_inta, int i_intb) __naked
 void main()
 {
    int i_result = 1024;
-   printf("%d\n", Add_Int(612, i_result));
+   puti(Add_Int(612, i_result));
 }
