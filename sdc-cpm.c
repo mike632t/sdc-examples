@@ -49,7 +49,6 @@
  *       int               HL_reg                  DE_reg
  */
 
-
 #if __SDCCCALL /* Use new calling convention */
 
 unsigned int bdos(unsigned char A_reg, unsigned int DE_reg)
