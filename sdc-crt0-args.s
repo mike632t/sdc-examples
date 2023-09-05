@@ -12,8 +12,8 @@
 ;
 ;   CP/M stores the length of the command line in memory at 0080H, followed
 ;   by the command line itself which may be up to 127 characters long.  The
-;   parser builds an array of pointers to each argument, replacing the each
-;   space with a null.
+;   parser  builds  an array of pointers to each argument and replaces  the
+;   spaces after each argument with a null to terminate each string.
 ;
 ;   sdasz80 -o sdc-crt0-args.s
 ;
@@ -34,6 +34,8 @@
 ;
 ;** 01 Sep 23   - Added  a  check for the CPU type using the overflow  flag
 ;		  which behaves differently on the 8080 - MT
+;
+;** To Do	- Check number of arguments doesn't overflow tha array!
 ;
 ;
 		.module	crt0
