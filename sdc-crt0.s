@@ -18,9 +18,10 @@
 ;   You should have received a copy of the GNU General Public License along
 ;   with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;
-;** 20 Aug 23   0.1     - Initial version - MT
-;   01 Sep 23   0.2     - Added a check for the CPU type - MT
+;** 20 Aug 23   - Initial version - MT
 ;
+;** 01 Sep 23   - Added  a  check for the CPU type using the overflow  flag
+;		  which behaves differently on the 8080 - MT
 ;
 		.module	crt0
 
@@ -29,21 +30,21 @@
 		.area	_HEADER (ABS)
 		.org	0x0100
 
-		ld	a,#0x7f			; Load with largest positive signed value.
-		inc	a			; Incrementing should result in an overflow.
-		jp	pe,init			; Z80 processor set the parity flag to signify overflow (8080 doesn't).
-		ld	de,#err_msg		; Display error message.
-		ld	c,#0x09			; Print string.
-		jp	0x0005			; Jump to BDOS (when BDOS returns program will exit).
+		ld	a,#0x7f		; Load with largest positive signed value.
+		inc	a		; Incrementing should result in an overflow.
+		jp	pe,init		; Z80 processor set the parity flag to signify overflow (8080 doesn't).
+		ld	de,#err_msg	; Display error message.
+		ld	c,#0x09		; Print string.
+		jp	0x0005		; Jump to BDOS (when BDOS returns program will exit).
 err_msg:
 		.str	"Z80 processor required."
 		.db	13,10,'$'
 
 init:
-		call	_main			; Call the C main routine
+		call	_main		; Call the C main routine
 		ret
 
-;		.area	_TPA			; Ordering of segments for the linker.
+;		.area	_TPA		; Ordering of segments for the linker.
 ;		.area	_HOME
 		.area	_CODE
 		.area	_DATA
