@@ -3,12 +3,15 @@
  *
  * Copyright(C) 2023   MT
  *
- * Displays the calendar for the specified month.
+ * Displays the calendar for a month.
  * 
  *    sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0-args.rel sdc-cpm.rel sdc-calendar.c 
  * 
  *    sdobjcopy -Iihex -Obinary --gap-fill 0 sdc-calendar.ihx sdc-calendar.com
  * 
+ * With sdcc 4.0.0 the code is 5168 bytes long, upgrading to sdcc 4.2.0
+ * reduces this to 4389 bytes.
+ *
  * This  program is free software: you can redistribute it and/or modify it
  * under  the terms of the GNU General Public License as published  by  the
  * Free  Software Foundation, either version 3 of the License, or (at  your
@@ -68,10 +71,10 @@ int i_weekday(int i_day, int i_month, int i_year)
 
 void v_print_calendar(int i_month, int i_year)
 {
-   const char* s_month[] = {  "    January", "   February", "     March", "     April", 
-                              "      May", "     June", "     July", "    August", 
-                              "   September", "    October", "   November", "   December" };
-   
+   const char* s_month[] = {  "    January",  "   February",   "     March",  "     April", 
+                              "      May",    "     June",     "     July",   "    August", 
+                              "   September", "    October",   "   November", "   December" };
+
    int i_length[] = {31, 28 + i_isLeapYear(i_year), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; /* Doesn't have to be declaired before any statements !! */
    int i_start = i_weekday(1, i_month, i_year);
 
