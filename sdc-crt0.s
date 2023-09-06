@@ -23,6 +23,9 @@
 ;** 01 Sep 23   - Added  a  check for the CPU type using the overflow  flag
 ;		  which behaves differently on the 8080 - MT
 ;
+;** 06 Sep 23	- Defined a seperate stack for the program (otherwise using
+;                 functions like printf() on CP/M causes it to crash) - MT
+;
 		.module	crt0
 
 		.globl	_main
@@ -39,14 +42,17 @@
 err_msg:
 		.str	"Z80 processor required."
 		.db	13,10,'$'
-
 init:
+		ld 	(stack),sp	; Save the stack pointer.
+		ld	sp,#stack
 		call	_main		; Call the C main routine
+		ld	sp,(stack)	; Restore original stack pointer
 		ret
-
 ;		.area	_TPA		; Ordering of segments for the linker.
 ;		.area	_HOME
 		.area	_CODE
 		.area	_DATA
+		.ds	256
+stack:	
+		.dw	0
 ;
-
