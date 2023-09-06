@@ -3,8 +3,7 @@
  *
  * Copyright(C) 2023   MT
  *
- * Demonstrates  how to call low level assembler routines in SDCC and print
- * an integer value without using printf(). 
+ * Demonstrates how to call some of the common math functions using SDCC.
  *
  * sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0.rel sdc-cpm.rel sdc-add.c
  *
@@ -12,7 +11,7 @@
  * 
  * With sdcc 4.0.0 this code is 3764 bytes long and takes aproximatly 69 ms
  * to execute (at 4Mhz), upgrading to sdcc 4.2.0 reduces this to 3265 bytes
- * and 49 ms!
+ * 49 ms!
  *
  * This  program is free software: you can redistribute it and/or modify it
  * under  the terms of the GNU General Public License as published  by  the
