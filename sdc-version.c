@@ -29,7 +29,7 @@
  *
  */
 
-#define  NAME        "sdc-hello"
+#define  NAME        "sdc-version"
 #define  VERSION     "0.1"
 #define  BUILD       "0001"
 #define  AUTHOR      "MT"
