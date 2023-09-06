@@ -49,6 +49,7 @@
  *       int               HL_reg                  DE_reg
  */
 
+
 #if __SDCCCALL /* Use new calling convention */
 
 unsigned int bdos(unsigned char A_reg, unsigned int DE_reg)
@@ -56,7 +57,6 @@ unsigned int bdos(unsigned char A_reg, unsigned int DE_reg)
 	A_reg;
 	DE_reg;
 	__asm
-         .z80
          ld		c,a         ; DE already points to string!
          call	#5
          ex    de,hl       ; Return result in DE
