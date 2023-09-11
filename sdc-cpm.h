@@ -24,7 +24,7 @@
  *
  */
 
-#define S_RESET		 0
+#define S_RESET		0
 #define C_READ       1
 #define C_WRITE      2
 #define A_READ       3
