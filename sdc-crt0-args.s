@@ -38,7 +38,7 @@
 ;** 06 Sep 23	- Defined a seperate stack for the program (otherwise using
 ;                 functions like printf() on CP/M causes it to crash) - MT
 ;               - Checks how many arguments have been parsed to prevent the
-;                 array of pointed over writing the parsing code - MT
+;                 array of pointers over writing the parsing code - MT
 ;               - Uses the memory occupied by the inital code to store  the
 ;                 pointers to each command line argument, this is sufficent
 ;                 to handle up to 34 arguments.  Should the command line be
@@ -51,7 +51,9 @@
 
 		.area	_HEADER (ABS)
 		.org	0x0100
-args:					; Overwriting initial code with arguments allows up to 34 arguments be passed to the main program.
+args:					; Overwriting the initial code with succesive pointers
+					; to each command line parameter allows up to 34 arguments
+					; be passed to the main program.
 		jp	start
 err_msg:
 		.str	"Z80 processor required."
