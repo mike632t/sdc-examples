@@ -5,9 +5,21 @@
  *
  * Displays the calendar for a month.
  * 
+ * Compile
+ *    sdcc -c -o sdc-calendar.rel -mz80 sdc-calendar.c
+ * 
+ * Link
+ *    sdcc -o sdc-calendar.ihx -mz80 --data-loc 0 --no-std-crt0 sdc-crt0-args.rel sdc-cpm.rel sdc-calendar.rel
+ * 
+ * Compile and Link
  *    sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0-args.rel sdc-cpm.rel sdc-calendar.c 
  * 
+ * Load
  *    sdobjcopy -Iihex -Obinary --gap-fill 0 sdc-calendar.ihx sdc-calendar.com
+ * 
+ * Clean
+ *    rm sdc-calendar.asm sdc-calendar.sym sdc-calendar.lst sdc-calendar.rel
+ *    rm sdc-calendar.map sdc-calendar.noi sdc-calendar.lk sdc-calendar.ihx sdc-calendar.com
  * 
  * With sdcc 4.0.0 the code is 5168 bytes long, upgrading to sdcc 4.2.0
  * reduces this to 4389 bytes.
@@ -99,7 +111,7 @@ void v_print_calendar(int i_month, int i_year)
    {
       printf("\n");
    }
-   printf("\n"); /* Print a blank line to finish. */
+   /** printf("\n"); /* Print a blank line to finish. */
 }
 
 int main(int argc, char* argv[])
