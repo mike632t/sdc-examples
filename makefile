@@ -19,19 +19,20 @@
 #
 #  30 Jul 23   0.1   - Initial version - MT
 #   4 Aug 23         - Added backup files to tar archive - MT
+#  12 Sep 23         - Do not recompile sdc-cpm.c - MT
+#                    - Delete temporary files - MT
 #
 PROJECT	=  sdc-examples
 
 EXCLUDE	=  sdc-cpm.c
-SOURCE	=  $(filter-out $(EXCLUDE), $(wildcard *.c)) # Compile all source files 
-OTHER		=  $(wildcard *.s)
+SOURCE	=  $(filter-out $(EXCLUDE), $(wildcard *.c)) # Compile most source files
 SUPPORT	=  $(wildcard *.s) 
-INCLUDE	=  $(wildcard *.h) 	# Automatically get all include files 
+INCLUDE	=  $(wildcard *.h) # Automatically get all include files 
 BACKUP	=  $(wildcard *.c.[0-9]) $(wildcard *.s.[0-9])
 OBJECT	=  $(SOURCE:.c=.rel)
 PROGRAM	=  $(SOURCE:.c=.com)
 
-FILES	=  $(SOURCE) $(OTHER) $(EXCLUDE) $(BACKUP) $(INCLUDE) LICENSE README.md makefile .gitignore .gitattributes
+FILES	=  $(SOURCE) $(EXCLUDE) $(BACKUP) $(INCLUDE) LICENSE README.md makefile .gitignore .gitattributes
 LANG	=  LANG_$(shell (echo $$LANG | cut -f 1 -d '_'))
 UNAME	=  $(shell uname)
 
@@ -44,22 +45,30 @@ make:$(PROGRAM) $(OBJECT)
 
 all:clean $(PROGRAM) $(OBJECT)
 
-# Compile sources
+# Compile (and delete temporary files)
 %.rel : %.c 
-	@$(CC) $(FLAGS) -c  -o $@ $<
+	@$(CC) $(FLAGS) -c -o $@ $<
+	@rm $(subst .c,.asm,$<)
+	@rm $(subst .c,.sym,$<)
+	@rm $(subst .c,.lst,$<)
 
-# Link
+# Link (and delete temporary files)
 %.ihx: %.rel 
 	@$(CC) $(FLAGS) -o $@ sdc-crt0-args.rel sdc-cpm.rel $< 
+	@rm -f $(subst .rel,.map,$<)|| true
+	@rm -f $(subst .rel,.noi,$<)|| true
+	@rm -f $(subst .rel,.lk,$<)|| true
+#	@rm -f $< || true # Don;t delete .rel files (forces rebuild).
 
 # Load
 %.com: %.ihx 
 	@sdobjcopy -Iihex -Obinary --gap-fill 0 $< $@ 
-	@ls --color $@  
+	@rm -f $< || true 
+	@echo $@
+
+backup: clean
+	@echo "$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz"; tar -czpf ..\/$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz $(FILES)	
 
 clean:
-	@rm -f *.asm *.sym *.lst $(OBJECT)
-	@rm -f *.map *.noi *.lk $(PROGRAM)
-	
-backup: clean
-	@echo "$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz"; tar -czpf ..\/$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz $(FILES)
+	@rm -f $(OBJECT)|| true
+	@rm -f $(PROGRAM)|| true
