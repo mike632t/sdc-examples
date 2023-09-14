@@ -45,9 +45,19 @@
 ;                 longer  than this any remaining characters will be passed
 ;                 to main() along with the last argument - MT
 ;
+;** 12 Sep 23	- Moved defination of putchar() and bdos() here as it seems
+;		  to make sense for these to be defined in the runtime code
+;		  as  it avoids having to include any CP/M specific  header
+;                 files allowing C programs to be compiled with either sdcc
+;		  or gcc without any modification - MT
+;
+;** To Do	- Tidy up code.
+;
 		.module	crt0
 
 		.globl	_main
+		.globl _bdos
+		.globl _putchar
 
 		.area	_HEADER (ABS)
 		.org	0x0100
@@ -119,6 +129,27 @@ done:
 		ld	sp,(stack)	; Restore original stack pointer
 		ret
 
+_bdos:
+		ld	c,a		; DE already points to string!
+		call	#5
+		ex	de,hl		; Return result in DE
+		ret
+_putchar:
+		ex	de,hl
+		ld	a,e
+		sub	a,#0x0a
+		or	a,d
+		jr	nz,nolf
+		push	de
+		ld	de,#0x000d
+		ld	a,#0x02
+		call	_bdos
+		pop	de
+nolf:
+		ld	a,#0x02
+		call	_bdos
+		ld	de,#0x0000	; return 0.
+		ret
 ;		.area	_TPA		; Ordering of segments for the linker.
 ;		.area	_HOME
 		.area	_CODE

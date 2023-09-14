@@ -26,6 +26,14 @@
 ;** 06 Sep 23	- Defined a seperate stack for the program (otherwise using
 ;                 functions like printf() on CP/M causes it to crash) - MT
 ;
+;** 12 Sep 23	- Moved defination of putchar() and bdos() here as it seems
+;		  to make sense for these to be defined in the runtime code
+;		  as  it avoids having to include any CP/M specific  header
+;                 files allowing C programs to be compiled with either sdcc
+;		  or gcc without any modification - MT
+;
+;** To Do	- Tidy up code.
+;
 		.module	crt0
 
 		.globl	_main
@@ -47,6 +55,27 @@ init:
 		ld	sp,#stack
 		call	_main		; Call the C main routine
 		ld	sp,(stack)	; Restore original stack pointer
+		ret
+_bdos::
+		ld	c,a		; DE already points to string!
+		call	#5
+		ex	de,hl		; Return result in DE
+		ret
+_putchar::
+		ex	de,hl
+		ld	a,e
+		sub	a,#0x0a
+		or	a,d
+		jr	nz,nolf
+		push	de
+		ld	de,#0x000d
+		ld	a,#0x02
+		call	_bdos
+		pop	de
+nolf:
+		ld	a,#0x02
+		call	_bdos
+		ld	de,#0x0000	; return 0.
 		ret
 ;		.area	_TPA		; Ordering of segments for the linker.
 ;		.area	_HOME

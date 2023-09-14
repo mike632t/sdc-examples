@@ -51,9 +51,6 @@
  
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef __SDCC
-#include "sdc-cpm.h"
-#endif
 
 int i_isLeapYear(int i_year) 
 /*

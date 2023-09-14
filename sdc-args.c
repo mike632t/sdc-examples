@@ -36,7 +36,6 @@
 #define  COPYRIGHT   (__DATE__ + 7) /* Extract copyright year from date */
  
 #include <stdio.h>
-#include "sdc-cpm.h"
 
 int main(int argc, char* argv[])
 {
