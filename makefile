@@ -19,15 +19,16 @@
 #
 #  30 Jul 23   0.1   - Initial version - MT
 #   4 Aug 23         - Added backup files to tar archive - MT
-#  12 Sep 23         - Do not recompile sdc-cpm.c - MT
-#                    - Delete temporary files - MT
+#  12 Sep 23         - Delete temporary files - MT
+#  16 Sep 23         - Only include source files prefixed with 'sdc' - MT
+#                    - Runtime library defined a vairable - MT
 #
 PROJECT	=  sdc-examples
 
-SOURCE	=  $(wildcard *.c) # Compile most source files
-OTHER	=  $(wildcard *.s) 
-INCLUDE	=  $(wildcard *.h) # Automatically get all include files 
-BACKUP	=  $(wildcard *.c.[0-9]) $(wildcard *.s.[0-9])
+SOURCE	=  $(wildcard sdc-*.c) # Compile most source files
+OTHER	=  $(wildcard sdc-*.s) 
+INCLUDE	=  $(wildcard sdc-*.h) # Automatically get all include files 
+BACKUP	=  $(wildcard sdc-*.c.[0-9]) $(wildcard sdc-*.s.[0-9])
 OBJECT	=  $(SOURCE:.c=.rel)
 PROGRAM	=  $(SOURCE:.c=.com)
 
@@ -35,6 +36,7 @@ FILES	=  $(SOURCE) $(OTHER) $(EXCLUDE) $(BACKUP) $(INCLUDE) LICENSE README.md ma
 LANG	=  LANG_$(shell (echo $$LANG | cut -f 1 -d '_'))
 UNAME	=  $(shell uname)
 
+RUNTIME	=  sdc-crt0.rel
 LIBS	= 
 FLAGS	=  -mz80 --data-loc 0 --no-std-crt0
 
@@ -51,7 +53,7 @@ all:clean $(PROGRAM) $(OBJECT)
 
 # Link (and delete temporary files)
 %.ihx: %.rel 
-	@sdcc $(FLAGS) -o $@ sdc-crt0-args.rel $< 
+	@sdcc $(FLAGS) -o $@ $(RUNTIME) $< 
 	@rm -f $(subst .rel,.map,$<)|| true
 	@rm -f $(subst .rel,.noi,$<)|| true
 	@rm -f $(subst .rel,.lk,$<)|| true
@@ -61,7 +63,7 @@ all:clean $(PROGRAM) $(OBJECT)
 %.com: %.ihx 
 	@sdobjcopy -Iihex -Obinary --gap-fill 0 $< $@ 
 	@rm -f $< || true 
-	@echo $@
+	@ls $@
 
 backup: clean
 	@echo "$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz"; tar -czpf ..\/$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz $(FILES)	
