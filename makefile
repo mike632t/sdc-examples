@@ -7,7 +7,7 @@
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# but WITHOUT ANY WARRANTY; without even the implied warranty ofgcc-echo.
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
@@ -21,7 +21,7 @@
 #   4 Aug 23         - Added backup files to tar archive - MT
 #  12 Sep 23         - Delete temporary files - MT
 #  16 Sep 23         - Only include source files prefixed with 'sdc' - MT
-#                    - Runtime library defined a vairable - MT
+#                    - Default runtime library defined a vairable - MT
 #
 PROJECT	=  sdc-examples
 
@@ -36,7 +36,7 @@ FILES	=  $(SOURCE) $(OTHER) $(EXCLUDE) $(BACKUP) $(INCLUDE) LICENSE README.md ma
 LANG	=  LANG_$(shell (echo $$LANG | cut -f 1 -d '_'))
 UNAME	=  $(shell uname)
 
-RUNTIME	=  sdc-crt0.rel
+RUNTIME	=  sdc-crt0-args.rel
 LIBS	= 
 FLAGS	=  -mz80 --data-loc 0 --no-std-crt0
 
