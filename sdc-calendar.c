@@ -4,23 +4,11 @@
  * Copyright(C) 2023   MT
  *
  * Displays the calendar for a month.
- * 
- * Compile
- *    sdcc -c -o sdc-calendar.rel -mz80 sdc-calendar.c
- * 
- * Link
- *    sdcc -o sdc-calendar.ihx -mz80 --data-loc 0 --no-std-crt0 sdc-crt0-args.rel sdc-cpm.rel sdc-calendar.rel
- * 
- * Compile and Link
- *    sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0-args.rel sdc-cpm.rel sdc-calendar.c 
- * 
- * Load
+ *
+ *    sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0-args.rel sdc-calendar.c
+ *
  *    sdobjcopy -Iihex -Obinary --gap-fill 0 sdc-calendar.ihx sdc-calendar.com
- * 
- * Clean
- *    rm sdc-calendar.asm sdc-calendar.sym sdc-calendar.lst sdc-calendar.rel
- *    rm sdc-calendar.map sdc-calendar.noi sdc-calendar.lk sdc-calendar.ihx sdc-calendar.com
- * 
+ *
  * With sdcc 4.0.0 the code is 5168 bytes long, upgrading to sdcc 4.2.0
  * reduces this to 4389 bytes.
  *
@@ -38,7 +26,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * 03 Sep 23         - Initial version - MT
- * 
+ *
  * ToDo              - Get month/year from clock or command line - MT
  *
  */
@@ -48,14 +36,14 @@
 #define  BUILD       "0001"
 #define  AUTHOR      "MT"
 #define  COPYRIGHT   (__DATE__ + 7) /* Extract copyright year from date */
- 
+
 #include <stdio.h>
 #include <stdlib.h>
 
-int i_isLeapYear(int i_year) 
+int i_isLeapYear(int i_year)
 /*
  * Returns true if the year is a leap year for years > 1752.
- * 
+ *
  */
 {
    return(i_year % 4 == 0 && i_year % 100 != 0 || i_year % 400 == 0);
@@ -63,15 +51,15 @@ int i_isLeapYear(int i_year)
 
 int i_weekday(int i_day, int i_month, int i_year)
 /*
- * Returns the day of the week (Sun = 0, Mon = 1, etc) for a given date 
+ * Returns the day of the week (Sun = 0, Mon = 1, etc) for a given date
  * for 1 <= i_month <= 12,  i_year > 1752.
- * 
+ *
  * https://en.wikipedia.org/wiki/Determination_of_the_day_of_the_week#Sakamoto's_methods
- * 
+ *
  */
 {
    int i_lookup[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4}; /* Don't use static (sdcc bug?) */
-   if (i_month < 3 ) 
+   if (i_month < 3 )
    {
       i_year -= 1;
    }
@@ -80,22 +68,22 @@ int i_weekday(int i_day, int i_month, int i_year)
 
 void v_print_calendar(int i_month, int i_year)
 {
-   const char* s_month[] = {  "    January",  "   February",   "     March",  "     April", 
-                              "      May",    "     June",     "     July",   "    August", 
+   const char* s_month[] = {  "    January",  "   February",   "     March",  "     April",
+                              "      May",    "     June",     "     July",   "    August",
                               "   September", "    October",   "   November", "   December" };
 
    int i_length[] = {31, 28 + i_isLeapYear(i_year), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; /* Doesn't have to be declaired before any statements !! */
    int i_start = i_weekday(1, i_month, i_year);
 
    printf("%s %4d\n",s_month[i_month - 1], i_year); /* Print heading (month and year) and days of the week. */
-   printf("Su Mo Tu We Th Fr Sa\n"); 
-   
+   printf("Su Mo Tu We Th Fr Sa\n");
+
    for (int i_count = 0; i_count < i_start; i_count++) /* Indent the first line if necessary */
    {
       printf("   ");
    }
-   
-   for (int i_day = 1; i_day <= i_length[i_month - 1]; i_day++) 
+
+   for (int i_day = 1; i_day <= i_length[i_month - 1]; i_day++)
    {
       printf("%2d ", i_day);
       if (++i_start > 6) /* End of week, print a newline.  */
@@ -108,7 +96,6 @@ void v_print_calendar(int i_month, int i_year)
    {
       printf("\n");
    }
-   /** printf("\n"); /* Print a blank line to finish. */
 }
 
 int main(int argc, char* argv[])
@@ -117,7 +104,7 @@ int main(int argc, char* argv[])
    {
       int i_month = atoi(argv[1]);
       int i_year = atoi(argv[2]);
-         
+
       if (i_month > 0 && i_month < 13 && i_year > 1752)
          v_print_calendar(i_month, i_year);
       else

@@ -5,9 +5,9 @@
  *
  * A classic 'Hello World' program used to demonstrate how to cross compile
  * code for a Z80 CPM target using SDCC.
- * 
- *    sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0.rel sdc-cpm.rel sdc-version.c 
- * 
+ *
+ *    sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0.rel sdc-version.c
+ *
  *    sdobjcopy -Iihex -Obinary --gap-fill 0 sdc-version.ihx sdc-version.com
  *
  * This  program is free software: you can redistribute it and/or modify it
@@ -24,7 +24,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * 20 Aug 23         - Initial version - MT
- * 
+ *
  * ToDo
  *
  */
@@ -34,10 +34,10 @@
 #define  BUILD       "0001"
 #define  AUTHOR      "MT"
 #define  COPYRIGHT   (__DATE__ + 7) /* Extract copyright year from date */
- 
+
 #include <stdio.h>
 #include <stdlib.h>
- 
+
 #define  false       0
 #define  true        !false
 

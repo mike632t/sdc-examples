@@ -3,11 +3,11 @@
  *
  * Copyright(C) 2023   MT
  *
- * Reads  characters  from the console input and echos then to the  console 
- * output. 
- * 
- * sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0-args.rel sdc-cpm.rel sdc-echo.c 
- * 
+ * Reads  characters  from the console input and echos then to the  console
+ * output.
+ *
+ * sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0.rel sdc-echo.c
+ *
  * sdobjcopy -Iihex -Obinary --gap-fill 0 sdc-echo.ihx sdc-echo.com
  *
  * This  program is free software: you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 #define  AUTHOR      "MT"
 #define  COPYRIGHT   (__DATE__ + 7) /* Extract copyright year from date */
 
-#ifndef debug 
+#ifndef debug
 #if defined(DEBUG)
 #define debug(code) do {printf("Debug\t: %s line : %d : ", \
             __FILE__, __LINE__); code;} while(0)
@@ -49,7 +49,7 @@ int main(void)
 {
    char c_char;
 
-   while((c_char = getchar()) != 0x1a) 
+   while((c_char = getchar()) != 0x1a)
    {
       if (isprint(c_char)) putchar(c_char);
       if ((c_char == 0x7f) || (c_char == 0x08)) putchar(0x08);

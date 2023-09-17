@@ -4,7 +4,11 @@
  * Copyright(C) 2023   MT
  *
  * Displays an ASCII mandlebrot set.
- * 
+ *
+ *    sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0.rel sdc-mandlebrot.c
+ *
+ *    sdobjcopy -Iihex -Obinary --gap-fill 0 sdc-mandlebrot.ihx sdc-mandlebrot.com
+ *
  * This  program is free software: you can redistribute it and/or modify it
  * under  the terms of the GNU General Public License as published  by  the
  * Free  Software Foundation, either version 3 of the License, or (at  your
@@ -19,7 +23,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * 03 Sep 23         - Initial version - MT
- * 
+ *
  * ToDo              - Get month/year from clock or command line - MT
  *
  */
@@ -34,21 +38,22 @@
 
 void main()
 {
-   const char* a[8] = {"\x1b[0m", "\x1b[0;41m", "\x1b[0;42m", "\x1b[0;43m", 
+   const char* a[8] = {"\x1b[0m", "\x1b[0;41m", "\x1b[0;42m", "\x1b[0;43m",
       "\x1b[0;44m", "\x1b[0;45m", "\x1b[0;46m", "\x1b[0;47m"};
-   
+
+   const int xa = -500;    /* Left edge      (-500, -420) */
+   const int xb = 300;     /* Right edge     ( 300,  300) */
+   const int ya = 240;     /* Top edge       ( 240,  300) */
+   const int yb = -250;    /* Bottom edge    (-250, -300) */
+   const int xd = 7;       /* X step size    (   7      ) */
+   const int yd= 15;       /* Y step size    (  15      ) */
+   const int m = 20;       /* Max iterations (  20,  200) */
+
    long x, y; /* Don't know why but this code only works with sdcc if x and y are long */
    int x2, y2, x0, y0, i, n;
    char c;
 
-   int xa = -500;
-   int xb = 300;
-   int ya = 240;
-   int yb = -250;
-   int xd = 7;
-   int yd= 15;
-   int m = 20;
-   
+
    y0 = ya;
    while (y0 > yb)
    {
