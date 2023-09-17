@@ -26,8 +26,8 @@
 PROJECT	=  sdc-examples
 
 SOURCE	=  $(wildcard sdc-*.c) # Compile most source files
-OTHER	=  $(wildcard sdc-*.s) 
-INCLUDE	=  $(wildcard sdc-*.h) # Automatically get all include files 
+OTHER	=  $(wildcard sdc-*.s)
+INCLUDE	=  $(wildcard sdc-*.h) # Automatically get all include files
 BACKUP	=  $(wildcard sdc-*.c.[0-9]) $(wildcard sdc-*.s.[0-9])
 OBJECT	=  $(SOURCE:.c=.rel)
 PROGRAM	=  $(SOURCE:.c=.com)
@@ -37,7 +37,7 @@ LANG	=  LANG_$(shell (echo $$LANG | cut -f 1 -d '_'))
 UNAME	=  $(shell uname)
 
 RUNTIME	=  sdc-crt0-args.rel
-LIBS	= 
+LIBS	=
 FLAGS	=  -mz80 --data-loc 0 --no-std-crt0
 
 make:$(PROGRAM) $(OBJECT)
@@ -45,28 +45,28 @@ make:$(PROGRAM) $(OBJECT)
 all:clean $(PROGRAM) $(OBJECT)
 
 # Compile (and delete temporary files)
-%.rel : %.c 
+%.rel : %.c
 	@sdcc $(FLAGS) -c -o $@ $<
 	@rm $(subst .c,.asm,$<)
 	@rm $(subst .c,.sym,$<)
 	@rm $(subst .c,.lst,$<)
 
 # Link (and delete temporary files)
-%.ihx: %.rel 
-	@sdcc $(FLAGS) -o $@ $(RUNTIME) $< 
+%.ihx: %.rel
+	@sdcc $(FLAGS) -o $@ $(RUNTIME) $<
 	@rm -f $(subst .rel,.map,$<)|| true
 	@rm -f $(subst .rel,.noi,$<)|| true
 	@rm -f $(subst .rel,.lk,$<)|| true
 #	@rm -f $< || true # Don;t delete .rel files (forces rebuild).
 
 # Load
-%.com: %.ihx 
-	@sdobjcopy -Iihex -Obinary --gap-fill 0 $< $@ 
-	@rm -f $< || true 
+%.com: %.ihx
+	@sdobjcopy -Iihex -Obinary --gap-fill 0 $< $@
+	@rm -f $< || true
 	@ls $@
 
 backup: clean
-	@echo "$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz"; tar -czpf ..\/$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz $(FILES)	
+	@echo "$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz"; tar -czpf ..\/$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz $(FILES)
 
 clean:
 	@rm -f $(OBJECT)|| true
