@@ -174,8 +174,8 @@ Start:		ld	a,#0x7f			; Load with largest positive signed value.
 		jp	pe,Init			; Z80 processor set the parity flag to signify overflow (8080 doesn't).
 		ld	de,#Err_msg		; Display error message.
 		ld	c,#BDOS$Print_Str	; Print string.
-		jp	BDOS			; Jump to BDOS (when BDOS returns program will exit).
-;
+		jp	CPM$BDOS		; Jump to BDOS (when BDOS returns program will exit).  Note - Can't use 
+;						; puts() as that routine itself uses Z80 opcodes... 
 Init:		ld 	(Stack),sp		; Save the stack pointer.
 		ld	sp,#Stack
 		call	_main			; Call main().
@@ -187,10 +187,6 @@ BIOS:		ld	hl,(CPM$Base+1)		; Get address of warmstart routine and use hi byte as
 		ld	c,e			; offset into the MSB. Put or word byte arguments into BC where the BIOS expects them.
 		ld	b,d
 		jp	(hl)			; Jump directly to BIOS function...
-;
-BDOS:		call	#CPM$BDOS		; Call BDOS
-		ex	de,hl			; Return result in DE
-		ret
 ;
 _getchar::	ld	c,#BIOS$CON_Input	; Get character using a direct BIOS call.
 		call	BIOS

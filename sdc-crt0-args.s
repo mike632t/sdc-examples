@@ -194,8 +194,8 @@ Start:		ld	a,#0x7f			; Load with largest positive signed value.
 		jp	pe,Parse		; Z80 processor set the parity flag to signify overflow (8080 doesn't).
 		ld	de,#Err_msg		; Display error message.
 		ld	c,#BDOS$Print_Str	; Print string.
-		jp	BDOS			; Jump to BDOS (when BDOS returns program will exit).
-;
+		jp	BDOS			; Jump to BDOS (when BDOS returns program will exit).  Note - Can't use 
+;						; puts() as that routine itself uses Z80 opcodes... 
 Parse:
 		ld	hl,#CPM$Tail		; Pointer to command line.
 		ld	bc,(#CPM$Tail)		; Length of command line.
@@ -280,6 +280,6 @@ NoLF:		ld	c,#BIOS$CON_Output
 ;		.area	_HOME
 		.area	_CODE
 		.area	_DATA
-		.ds	256
-Stack:		.dw	0
+		.ds	256			; Reserve 256 bytes for the stack
+Stack:		.dw	0			; Somewhere to save the stack pointer.
 ;
