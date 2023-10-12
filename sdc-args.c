@@ -5,10 +5,10 @@
  *
  * Displays all the comamnd line arguments to demonstrate how to access the
  * command line when using SDCC to target CPM.
- *
- * sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0-args.rel sdc-args.c
- *
- * sdobjcopy -Iihex -Obinary --gap-fill 0 sdc-args.ihx sdc-args.com
+ * 
+ * sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0-args.rel sdc-args.c 
+ * 
+ * sdobjcopy -Iihex -Obinary sdc-args.ihx sdc-args.com
  *
  * This  program is free software: you can redistribute it and/or modify it
  * under  the terms of the GNU General Public License as published  by  the
@@ -24,17 +24,18 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * 20 Aug 23         - Initial version - MT
- *
+ * 12 Sep 23         - Moved CP/M specific function to C runtime - MT
+ * 
  * ToDo
  *
  */
 
 #define  NAME        "sdc-args"
 #define  VERSION     "0.1"
-#define  BUILD       "0001"
+#define  BUILD       "0002"
 #define  AUTHOR      "MT"
 #define  COPYRIGHT   (__DATE__ + 7) /* Extract copyright year from date */
-
+ 
 #include <stdio.h>
 
 int main(int argc, char* argv[])
@@ -45,5 +46,3 @@ int main(int argc, char* argv[])
    }
    return 0;
 }
-
-

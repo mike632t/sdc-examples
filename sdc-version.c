@@ -3,12 +3,11 @@
  *
  * Copyright(C) 2022   MT
  *
- * A classic 'Hello World' program used to demonstrate how to cross compile
- * code for a Z80 CPM target using SDCC.
- *
- *    sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0.rel sdc-version.c
- *
- *    sdobjcopy -Iihex -Obinary --gap-fill 0 sdc-version.ihx sdc-version.com
+ * Simply display the program version number and exits.
+ * 
+ *    sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0.rel sdc-version.c 
+ * 
+ *    sdobjcopy -Iihex -Obinary sdc-version.ihx sdc-version.com
  *
  * This  program is free software: you can redistribute it and/or modify it
  * under  the terms of the GNU General Public License as published  by  the
@@ -24,20 +23,19 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * 20 Aug 23         - Initial version - MT
- *
- * ToDo
- *
+ * 12 Sep 23         - Moved CP/M specific function to C runtime - MT
+ * 
  */
 
 #define  NAME        "sdc-version"
 #define  VERSION     "0.1"
-#define  BUILD       "0001"
+#define  BUILD       "0002"
 #define  AUTHOR      "MT"
 #define  COPYRIGHT   (__DATE__ + 7) /* Extract copyright year from date */
-
+ 
 #include <stdio.h>
 #include <stdlib.h>
-
+ 
 #define  false       0
 #define  true        !false
 
@@ -54,5 +52,3 @@ void main()
 {
    v_version();
 }
-
-
