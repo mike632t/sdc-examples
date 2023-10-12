@@ -5,10 +5,6 @@
  *
  * Displays the calendar for a month.
  *
- *    sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0-args.rel sdc-calendar.c
- *
- *    sdobjcopy -Iihex -Obinary --gap-fill 0 sdc-calendar.ihx sdc-calendar.com
- *
  * With sdcc 4.0.0 the code is 5168 bytes long, upgrading to sdcc 4.2.0
  * reduces this to 4389 bytes.
  *
@@ -26,8 +22,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * 03 Sep 23         - Initial version - MT
- *
- * ToDo              - Get month/year from clock or command line - MT
+ * 12 Sep 23         - Gets month/year from command line - MT
  *
  */
 
