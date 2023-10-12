@@ -6,10 +6,6 @@
  * A  random password generator to generate passwords made up from triplets 
  * comprising of a constant, a vowel, and a constant.
  *
- * sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0.rel sdc-pwdgen.c 
- * 
- * sdobjcopy -Iihex -Obinary --gap-fill 0 sdc-pwdgen.ihx sdc-pwdgen.com
- *
  * This  program is free software: you can redistribute it and/or modify  it
  * under  the  terms of the GNU General Public License as published  by  the
  * Free  Software  Foundation, either version 3 of the License, or (at  your 
