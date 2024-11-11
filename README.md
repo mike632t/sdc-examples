@@ -5,23 +5,26 @@
 
 A minimal runtime environment to allow SDCC to target systems running CP/M.
 
-It also contains a small collection of example programs tah can be compiled
-standard CP/M `.COM` executables.
+It also contains a small collection of example programs.
 
-## Contents
+Note - Newer versions of the SDCC compiler use a different calling standard 
+so you need to use `--sdcccall 0` when using these CP/M libraries with SDCC 
+4.2.0 or later.  
+
+### Contents
 
 Runtime files:
 - `sdc-crt0.s` — Minimal CP/M runtime support.
 - `sdc-cpm.c` — Provides the putchar() function used by printf() etc.
 
-Examples
+Examples:
 - `sdc-hello.c` — Of course the first example is "Hello World".
 - `sdc-mandlebrot.c` — ASCII Mandelbrot set.
 - `sdc-julia.c` — ASCII Julia set.
 
 The examples were compiled using SDCC version 3.8 and tested on CP/M 2.2.
 
-## Building the CP/M runtime libraries
+### Building the CP/M runtime libraries
 
 The C runtime is written for SDCC's Z80 assembler and is used to define the 
 starting address and to call main().
@@ -40,7 +43,7 @@ Compile using:
 sdcc -mz80 -c sdc-cpm.c
 ```
 
-## Compiling a program
+### Compiling a program
 
 Once the runtime libraries are built you are ready to use the compiler.
 
@@ -51,8 +54,7 @@ data types won't be the same as on modern 64-bit systems.
 To compile a program you need to invoke the compiler telling it not to  use 
 the standard runtime library and to link program with both the libraries.
 
-
-Compile a progrqam using:
+Compile a program using:
 ```
 sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0.rel sdc-cpm.rel program.c
 ```
