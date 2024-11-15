@@ -3,13 +3,7 @@
  *
  * Copyright(C) 2023   MT
  *
- * Classic hello world program.
- * 
- * For sdcc compile using:
- *    sdasz80 -o sdc-crt0.s
- *    sdcc -mz80 -c sdc-cpm.c
- *    sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0.rel sdc-cpm.rel sdc-hello.c 
- *    sdobjcopy -Iihex -Obinary --gap-fill 0 sdc-hello.ihx sdc-hello.com
+ * The obligatory hello world program.
  * 
  * This  program is free software: you can redistribute it and/or modify it
  * under  the terms of the GNU General Public License as published  by  the

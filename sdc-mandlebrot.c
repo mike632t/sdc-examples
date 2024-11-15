@@ -5,12 +5,6 @@
  *
  * Displays an ASCII Mandelbrot set.
  * 
- * For sdcc compile using:
- *    sdasz80 -o sdc-crt0.s
- *    sdcc -mz80 -c sdc-cpm.c
- *    sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0.rel sdc-cpm.rel sdc-mandlebrot.c 
- *    sdobjcopy -Iihex -Obinary --gap-fill 0 sdc-mandlebrot.ihx sdc-mandlebrot.com
- * 
  * This  program is free software: you can redistribute it and/or modify it
  * under  the terms of the GNU General Public License as published  by  the
  * Free  Software Foundation, either version 3 of the License, or (at  your

@@ -24,6 +24,8 @@ Examples:
 
 The examples were compiled using SDCC version 3.8 and tested on CP/M 2.2.
 
+On 4Mhz Z80 generating the Julia set will take approximately 45 minutes! 
+
 ### Building the CP/M runtime libraries
 
 The C runtime is written for SDCC's Z80 assembler and is used to define the 

@@ -5,12 +5,6 @@
  *
  * Displays an ASCII Julia set.
  * 
- * For sdcc compile using:
- *    sdasz80 -o sdc-crt0.s
- *    sdcc -mz80 -c sdc-cpm.c
- *    sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0.rel sdc-cpm.rel sdc-julia.c 
- *    sdobjcopy -Iihex -Obinary --gap-fill 0 sdc-julia.ihx sdc-julia.com
- * 
  * This  program is free software: you can redistribute it and/or modify it
  * under  the terms of the GNU General Public License as published  by  the
  * Free  Software Foundation, either version 3 of the License, or (at  your
