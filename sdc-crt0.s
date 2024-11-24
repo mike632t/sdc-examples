@@ -16,34 +16,46 @@
 ;   You should have received a copy of the GNU General Public License along
 ;   with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;
-;** 20 Aug 23   0.1     - Initial version - MT
-;   01 Sep 23   0.2     - Added a check for the CPU type using the overflow
-;                         flag which behaves differently on the 8080 
+;** 20 Aug 23   0.1   - Initial version - MT
 ;
+;** 01 Sep 23   0.2   - Added  a check for the CPU type using the  overflow
+;                       flag which behaves differently on the 8080 - MT
 ;
-		.module	crt0
-
-		.globl	_main
-
-		.area	_HEADER (ABS)
-		.org	0x0100
-
-		ld	a,#0x7f			; Load with largest positive signed value.
-		inc	a			; Incrementing should result in an overflow.
-		jp	pe,init			; Z80 processor set the parity flag to signify overflow (8080 doesn't).
-		ld	de,#err_msg		; Display error message.
-		ld	c,#0x09			; Print string.
-		jp	0x0005			; Jump to BDOS (when BDOS returns program will exit).
+;** 24 Nov 24         - Inserted a jump instruction at the beginning of the 
+;                       program and tidied up the comments - MT
+;
+                .module crt0
+;
+                .globl  _main
+;
+                .area   _HEADER (ABS)
+                .org    0x0100
+;
+;-- Check CPU type (as sdcc requires a Z80)
+;
+                jp      start           ; Jump the start of program.
+;
 err_msg:
-		.str	"Z80 processor required."
-		.db	13,10,'$'
+                .str    "Z80 processor required."
+                .db     13,10,'$'
 ;
-init:		call	_main			; Call the C main routine
-		ret
-
-;		.area	_TPA			; Ordering of segments for the linker.
-;		.area	_HOME
-		.area	_CODE
-		.area	_DATA
+start:          ld      a,#0x7f         ; Load with largest positive signed value.
+                inc     a               ; Incrementing should result in an overflow.
+                jp      pe,init         ; Z80 processor set the parity flag to signify overflow (8080 doesn't).
+                ld      de,#err_msg     ; Display error message.
+                ld      c,#0x09         ; Print string.
+                jp      0x0005          ; Jump to BDOS (when BDOS returns program will exit).
+;
+init:           call    _main           ; Call main().
+                ret
+;
+;-- Place data after program code, and heap after data
+;
+                .area   _CODE           ; Program code area
+                .area   _DATA           ; Data area
+_heap_top::     .dw 0                   ; Address of the start of the heap area
+;
+_HEAP_start::                           ; Space for the heap.
+;
 ;
 
