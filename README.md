@@ -16,11 +16,13 @@ so you need to use `--sdcccall 0` when using these CP/M libraries with SDCC
 Runtime files:
 - `sdc-crt0.s` — Minimal CP/M runtime support.
 - `sdc-cpm.c` — Provides the putchar() function used by printf() etc.
+- `sdc-crt0-args.s` — CP/M runtime with argument parser.
 
 Examples:
 - `sdc-hello.c` — Of course the first example is "Hello World".
 - `sdc-mandlebrot.c` — ASCII Mandelbrot set.
 - `sdc-julia.c` — ASCII Julia set.
+- `sdc-args.c` — Display command line arguments.
 
 The examples were compiled using SDCC version 3.8 and tested on CP/M 2.2.
 
