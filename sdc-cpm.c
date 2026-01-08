@@ -25,6 +25,7 @@
  * 07 Oct 26   0.3   - Moved command line parser here to allow the compiler
  *                     to determine the correct calling convention - MT
  *                   - Rewrote the command line parser - MT
+ *                   - Parser now supports new calling convention - MT
  * 
  * ToDo              - Check BDOS return value.
  *                   - Allow  command  line parameters to  be  enclosed  in
@@ -34,7 +35,7 @@
 
 #define  NAME        "sdc-cpm"
 #define  VERSION     "0.3"
-#define  BUILD       "0004"
+#define  BUILD       "0005"
 #define  AUTHOR      "MT"
 #define  COPYRIGHT   (__DATE__ + 7) /* Extract copyright year from date. */
 
@@ -69,6 +70,8 @@ unsigned int bdos(unsigned char c_byte, unsigned int i_word) __naked
                jp    CPM$BDOS          ; Return from BDOS.
    __endasm;
 }
+
+#endif
 
 unsigned int __parse() __naked  /* Parse command line  */
 {
@@ -113,7 +116,23 @@ skip:          inc   hl                ; Move to next character in buffer.
                inc   hl
                jr    save
 ;
+
+#if __SDCCCALL == 1
                
+;
+;-- Call main(argc, argv[])
+;
+done:          ld	   de,#CPM$Load+3		; Pointer to argv[0].  
+               ld    h,b
+               ld    l,c
+               call  _main
+               ret
+;
+   __endasm;
+}
+
+#else
+
 ;
 ;-- Call main(argc, argv[])
 ;
