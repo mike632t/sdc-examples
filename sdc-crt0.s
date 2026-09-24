@@ -24,6 +24,8 @@
 ;** 24 Nov 24         - Inserted a jump instruction at the beginning of the 
 ;                       program and tidied up the comments - MT
 ;
+;** 24 Sep 26         - Allocate 128 bytes stack space below the heap - MT
+;
                 .module crt0
 ;
                 .globl  _main
@@ -31,7 +33,7 @@
                 .area   _HEADER (ABS)
                 .org    0x0100
 ;
-;-- Check CPU type (as sdcc requires a Z80)
+;-- Check CPU type (as sdcc requires a Z80).
 ;
                 jp      start           ; Jump the start of program.
 ;
@@ -46,16 +48,19 @@ start:          ld      a,#0x7f         ; Load with largest positive signed valu
                 ld      c,#0x09         ; Print string.
                 jp      0x0005          ; Jump to BDOS (when BDOS returns program will exit).
 ;
-init:           call    _main           ; Call main().
-                ret
+init:           ld      (stack),sp      ; Save the stack pointer.
+                ld      sp,#stack
+                call    _main           ; Call main().
+                ld      sp,(stack)      ; Restore original stack pointer
+                ret                     ; and return.
 ;
 ;-- Place data after program code, and heap after data
 ;
                 .area   _CODE           ; Program code area
                 .area   _DATA           ; Data area
-_heap_top::     .dw 0                   ; Address of the start of the heap area
+                .ds     128             ; Stack space 128 bytes.
+stack:          .dw     0
+_heap_top::     .dw     0               ; Address of the start of the heap area
 ;
-_HEAP_start::                           ; Space for the heap.
+_HEAP_start::                           ; Heap space.
 ;
-;
-
