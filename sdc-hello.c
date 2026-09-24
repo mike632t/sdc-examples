@@ -20,7 +20,7 @@
  *
  * 20 Aug 23         - Initial version - MT
  * 
- * ToDo
+ * 24 Nov 24         - Removed unnecessary (and non standard) include) - MT
  *
  */
 
@@ -28,10 +28,9 @@
 #define  VERSION     "0.1"
 #define  BUILD       "0001"
 #define  AUTHOR      "MT"
-#define  COPYRIGHT   (__DATE__ + 7) /* Extract copyright year from date */
+#define  COPYRIGHT   (__DATE__ + 7)  /* Extract copyright year from date. */
  
 #include <stdio.h>
-#include "sdc-cpm.h"
 
 void main()
 {
