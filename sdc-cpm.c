@@ -24,6 +24,12 @@
  *
  */
 
+#define  NAME        "sdc-cpm"
+#define  VERSION     "0.1"
+#define  BUILD       "0001"
+#define  AUTHOR      "MT"
+#define  COPYRIGHT   (__DATE__ + 7) /* Extract copyright year from date. */
+
 #include "sdc-cpm.h"
 
 unsigned int bdos(unsigned char c_byte, unsigned int i_word) __naked
