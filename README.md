@@ -3,7 +3,17 @@
 
 ## sdc-examples
 
-A minimal runtime environment to allow SDCC to target systems running CP/M.
+The Small Device C Compiler is a modern cross compiler supporting  multiple
+platforms including the Z80.  
+
+The  compiler is intended to target bare metal development boards and knows 
+nothing about target hardware and provides no operating system support.
+
+Each target platform requires a separate runtime to provide an interface to
+that environment.
+
+This repository provides a minimal interface to support the CP/M  operating 
+system.
 
 It also contains a small collection of example programs.
 
@@ -28,6 +38,12 @@ The examples were compiled using SDCC version 3.8 and tested on CP/M 2.2.
 
 On 4Mhz Z80 generating the Julia set will take approximately 45 minutes! 
 
+### Known Issues
+ 
+This version uses the original compiler calling convention.  To compile the 
+code  with a sdcc version 4.1.12 or later you need to add `--sdcccall 0` to
+`CFLAGS` in the makefile.
+
 ### Building the CP/M runtime libraries
 
 The C runtime is written for SDCC's Z80 assembler and is used to define the 
@@ -36,20 +52,30 @@ starting address and to call main().
 Compile using:
 ```
 sdasz80 -o sdc-crt0.s
+OR
+sdasz80 -o sdc-crt0-args.s
 ```
+
 To be able to interact with the operating system programs will use the CP/M
 BDOS interface defined in the CP/M library.  
-
-Note - This version only allows programs to display text on the console.
 
 Compile using:
 ```
 sdcc -mz80 -c sdc-cpm.c
 ```
 
+### Known Issues
+ 
+Currently  the only function available is `putchar()` which allows programs 
+to display their output on the console but nothing else is included  (there 
+is no way to enter text and no support for files of any type).
+
+I did say this was a minimal runtime environment!
+
 ### Compiling a program
 
-Once the runtime libraries are built you are ready to use the compiler.
+Once  the runtime libraries are built you are ready to use them in your own
+programs. 
 
 Most programs should compile but the limited runtime support means that you 
 can  only interact with the console and you also need to remember that some 
@@ -86,3 +112,36 @@ sdobjcopy -Iihex -Obinary --gap-fill 0 program.ihx program.com
 -Obinary       Output file type is binary
 --gap-fill 0   Fill any gaps with '0's
 ```
+
+A makefile is provided which will compile all the example programs and link
+them  with the default runtime library, or you can specify which runtime to 
+use and which programs to compile.  
+
+To minimise the size of each program two versions are provided.
+
+- 'sdc-crt0' supports just console output (128 byte stack).
+
+- `sdc-crt0-args` passes `argc` and `argv[]` to `main()` (512 byte stack).
+
+Programs  that require a specific runtime should be built before those that
+do not.
+
+The following commands use make to build two programs including support for 
+argument passing using `argc` and `argv[]` and then builds the rest.
+
+```
+make clean 
+
+make RUNTIME=sdc-crt0-args sdc-calendar sdc-echo
+
+make
+```
+
+### Known Issues
+
+Currently neither runtime supports static or global variables.  
+
+### Compatibility
+
+The  resulting COM files have been tested using ntvcm and both CP/M 2.2 and 
+NZCOM on simh. 
