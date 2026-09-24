@@ -38,6 +38,10 @@
 ;                     - Inserted a jump instruction at the beginning of the 
 ;                       program and tidied up the comments - MT
 ;
+;** 24 Sep 26         - Allocate 512 bytes stack space below the heap. This
+;                       should provide enough stack space for most programs
+;                       and avoiding the need to exit via a CP/M reset - MT
+;
 ;   To Do:            - Allow  command  line parameters to be  enclosed  in
 ;                       quotes.
 ;
@@ -66,7 +70,7 @@ start:          ld      a,#0x7f         ; Load with largest positive signed valu
 init:           ld      a,(#0x80)
                 or      a
                 ld      c,#0
-                jr      z,cont
+                jr      z,done
 ;
 ;-- Terminate command line with an ASCII NUL this will tell us when to stop 
 ;   scanning and terminate the last argument.
@@ -98,7 +102,9 @@ init:           ld      a,(#0x80)
 ;                       
 ;-- Command line processing done.
 ;
-cont:           ld      hl,#0x0100      
+done:		ld 	(stack),sp	; Save the stack pointer.
+		ld	sp,#stack
+                ld      hl,#0x0100      
                 ld      b,#0            ; C contains the number of arguments.
                 push    hl              ; Pass info as parameters to "main"
                 push    bc
@@ -114,14 +120,13 @@ cont:           ld      hl,#0x0100
 ;
 ;-- Exit program when main is finished.
 ;
-;               pop     bc              ; Unload the stack
-;               pop     hl
-;               ret                     ; and return.
+		ld	sp,(stack)	; Restore original stack pointer
+                ret                     ; and return.
 ;
 ;-- Alternatively perform a warm reset.
 ;
-                ld      c,#0            ; Call BDOS RESET function
-                jp      5
+;               ld      c,#0            ; Call BDOS RESET function
+;               jp      5
 ;                       
 ;-- Begin processing the command line
 ;
@@ -165,7 +170,9 @@ nospc:          inc     hl
 ;
                 .area   _CODE           ; Program code area
                 .area   _DATA           ; Data area
-_heap_top::     .dw 0                   ; Address of the start of the heap area
+                .ds     512             ; Stack space 512 bytes.
+stack:          .dw     0
+_heap_top::     .dw     0               ; Address of the start of the heap area
 ;
-_HEAP_start::                           ; Space for the heap.
+_HEAP_start::                           ; Heap space.
 ;
