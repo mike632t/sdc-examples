@@ -42,17 +42,22 @@
 ;                       should provide enough stack space for most programs
 ;                       and avoiding the need to exit via a CP/M reset - MT
 ;
+;** 25 Sep 26         - Added support for global variables - MT
+;
 ;   To Do:            - Allow  command  line parameters to be  enclosed  in
 ;                       quotes.
 ;
                 .module crt0
 ;
                 .globl  _main
+                .globl  l__INITIALIZER
+                .globl  s__INITIALIZER
+                .globl  s__INITIALIZED
 ;
                 .area   _HEADER (ABS)
                 .org    0x0100
 ;
-;-- Check CPU type (as sdcc requires a Z80)
+;-- Check CPU type (as sdcc requires a Z80).
 ;
                 jp      start           ; Jump the start of program.
 ;
@@ -67,7 +72,19 @@ start:          ld      a,#0x7f         ; Load with largest positive signed valu
                 ld      c,#0x09         ; Print string.
                 jp      0x0005          ; Jump to BDOS (when BDOS returns program will exit).
 ;
-init:           ld      a,(#0x80)
+;-- Set up stack and initialize static/global variables.
+;
+init:           ld      (stack),sp      ; Save the stack pointer.
+                ld      sp,#stack
+                ld      bc,#l__INITIALIZER
+                ld      a,b
+                or      a,c
+                jr      z,main          ; Nothing to do here.
+                ld      de,#s__INITIALIZED
+                ld      hl,#s__INITIALIZER
+                ldir                    ; Copy initial values to memory.
+;
+main:           ld      a,(#0x80)
                 or      a
                 ld      c,#0
                 jr      z,done
@@ -166,13 +183,18 @@ loop:           ld      a,(hl)
 nospc:          inc     hl
                 jr      loop
 ;
-;-- Place data after program code, and heap after data
+;-- Define order of storage areas (place data after program code).
 ;
-                .area   _CODE           ; Program code area
-                .area   _DATA           ; Data area
+;               .area   _HOME
+                .area   _CODE           ; Program code area.
+                .area   _INITIALIZER
+                .area   _INITIALIZED    ; Global variables.
+                .area   _DATA           ; Data area.
                 .ds     512             ; Stack space 512 bytes.
 stack:          .dw     0
-_heap_top::     .dw     0               ; Address of the start of the heap area
+;               .area   _BSS
+                .area   _HEAP           ; Place heap after data.
+_heap_top::     .dw     0               ; Address of the start of the heap area.
 ;
 _HEAP_start::                           ; Heap space.
 ;
