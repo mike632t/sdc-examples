@@ -17,8 +17,8 @@ system.
 
 It also contains a small collection of example programs.
 
-Note - Newer versions of the SDCC compiler use a different calling standard 
-so the runtime files below wont work with with SDCC 4.2.0 or later.  
+This version includes a minimal runtime without parameter passing or static 
+vairables that supports both the old and new calling conventions.
 
 ### Contents
 
