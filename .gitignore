@@ -1,0 +1,14 @@
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.c
+!*.h
+!*.s
+
+# Unignore documentation
+!LICENSE
+!*.md
+
+
+
