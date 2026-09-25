@@ -18,7 +18,7 @@ system.
 It also contains a small collection of example programs.
 
 This version includes a minimal runtime without parameter passing or static 
-vairables that supports both the old and new calling conventions.
+variables that supports both the old and new calling conventions.
 
 ### Contents
 

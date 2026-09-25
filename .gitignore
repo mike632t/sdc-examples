@@ -8,7 +8,4 @@
 
 # Unignore documentation
 !LICENSE
-!*.md
-
-
-
+!README.md
