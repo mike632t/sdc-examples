@@ -21,7 +21,7 @@
  * 24 Nov 24   0.1   - Initial version - MT
  * 16 Sep 26   0.2   - Can display a whole year or a single month - MT
  * 
- * ToDo              - Improve error checking in argument parser
+ * To Do             - Improve error checking in argument parser
  *                   - Add options for '--help', '--version'
  *                   - Allow the user to specify the number of months to be
  *                     shown  (print_months() can already do this) and  the 
