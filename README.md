@@ -18,8 +18,7 @@ system.
 It also contains a small collection of example programs.
 
 Note - Newer versions of the SDCC compiler use a different calling standard 
-so you need to use `--sdcccall 0` when using these CP/M libraries with SDCC 
-4.2.0 or later.  
+so the runtime files below wont work with with SDCC 4.2.0 or later.  
 
 ### Contents
 
