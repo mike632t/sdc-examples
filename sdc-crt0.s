@@ -26,6 +26,9 @@
 ;
 ;** 24 Sep 26         - Allocate 128 bytes stack space below the heap - MT
 ;
+;** 26 Sep 26         - Increased stack size to 192 bytes - MT
+;
+;
                 .module crt0
 ;
                 .globl  _main
@@ -58,7 +61,7 @@ init:           ld      (stack),sp      ; Save the stack pointer.
 ;
                 .area   _CODE           ; Program code area
                 .area   _DATA           ; Data area
-                .ds     128             ; Stack space 128 bytes.
+                .ds     192             ; Stack space 128 bytes.
 stack:          .dw     0
 _heap_top::     .dw     0               ; Address of the start of the heap area
 ;
