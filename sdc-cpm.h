@@ -19,6 +19,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * 20 Aug 23         - Initial version - MT
+ * 26 Sep 26         - Removed function prototypes - MT
  * 
  * ToDo
  *
@@ -61,7 +62,3 @@
 #define F_RANDREC    36
 #define DRV_RESET    37
 #define F_WRITEZF    40
-
-unsigned int bdoscall(unsigned char C_reg, unsigned int DE_reg) __naked;
-
-int putchar(int c);
