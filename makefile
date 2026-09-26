@@ -23,7 +23,7 @@
 #  16 Sep 23         - Only include source files prefixed with 'sdc' - MT
 #  22 Sep 26         - Default runtime library defined in a variable - MT
 #                    - Don't include sdc-cpm.c - MT
-#  24 Sep 26         - Updates runtime as part of cleanup - MT
+#  26 Sep 26         - Make object files dependent on the runtime - MT
 #
 PROJECT	=  sdc-examples
 
@@ -45,7 +45,11 @@ LDFLAGS	=  sdc-cpm.rel $(RUNTIME).rel
 
 .SUFFIXES:  # Disable built-in suffix rules (required for older version of make)
 
-make:$(PROGRAM) $(OBJECT)
+# Making any object file dependent on the runtime means that the runtime is
+# updated first and any programs are relinked when it changes
+$(OBJECT): $(RUNTIME).rel sdc-cpm.rel  
+
+make:$(RUNTIME) sdc-cpm.rel $(PROGRAM) $(OBJECT)
 
 all:clean $(PROGRAM) $(OBJECT)
 
@@ -53,16 +57,18 @@ all:clean $(PROGRAM) $(OBJECT)
 runtime: $(RUNTIME).rel sdc-cpm.rel
 
 $(RUNTIME).rel: $(RUNTIME).s
-	@sdasz80 -o $@ $<
+	sdasz80 -o $@ $<
+	@ls $@
 
-# Compile cpm support code
+# Compile CP/M support code
 sdc-cpm.rel: sdc-cpm.c
-	@sdcc -mz80 -c $<
+	sdcc -mz80 -c $<
 	@rm -f sdc-cpm.asm sdc-cpm.lst sdc-cpm.sym
+	@ls $<
 
 # Compile (and delete any working files)
-%.rel : %.c
-	@sdcc $(CFLAGS) -c -o $@ $<
+%.rel: %.c
+	sdcc $(CFLAGS) -c -o $@ $<
 	@rm -f $(subst .c,.asm,$<)
 	@rm -f $(subst .c,.sym,$<)
 	@rm -f $(subst .c,.lst,$<)
