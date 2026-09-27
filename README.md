@@ -31,6 +31,7 @@ Examples:
 - `sdc-hello.c` — Of course the first example is "Hello World".
 - `sdc-mandlebrot.c` — ASCII Mandelbrot set.
 - `sdc-julia.c` — ASCII Julia set.
+- `sdc-static.c` — Checks that we can use static variables.
 - `sdc-random.c` — Generate 500,000 random numbers using rand().
 - `sdc-calls.c` — Demonstrates calling assembler from C.
 
