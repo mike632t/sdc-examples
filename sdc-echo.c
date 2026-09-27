@@ -1,7 +1,7 @@
 /*
- * echo.c
+ * sdc-echo.c
  *
- * Copyright(C) 2026 - MT
+ * Copyright(C) 2023   MT
  *
  * Echos the command line on the console.
  *
@@ -18,7 +18,10 @@
  * You  should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>. *
  *
- * 12 Sep 26   0.1   - Initial version - MT
+ * 22 Nov 24   0.1   - Initial version - MT
+ * 12 Sep 26   0.2   - Use printf() -MT
+ * 
+ * To Do             -
  *
  */
 
