@@ -24,6 +24,9 @@
 #  22 Sep 26         - Default runtime library defined in a variable - MT
 #                    - Don't include sdc-cpm.c - MT
 #  26 Sep 26         - Make object files dependent on the runtime - MT
+#                    - Specifying a program by name forces it to be rebuilt
+#                      allowing  programs to be rebuilt against a different 
+#                      runtime - MT
 #
 PROJECT	=  sdc-examples
 
@@ -34,6 +37,8 @@ BACKUP	=  $(wildcard sdc-*.c.[0-9]) $(wildcard sdc-*.s.[0-9])
 OBJECT	=  $(SOURCE:.c=.rel)
 PROGRAM	=  $(SOURCE:.c=.com)
 
+TARGET	=  $(filter $(SOURCE:.c=),$(MAKECMDGOALS))
+
 FILES	=  $(SOURCE) sdc-cpm.c $(OTHER) $(BACKUP) $(INCLUDE) LICENSE README.md makefile .gitignore .gitattributes
 LANG	=  LANG_$(shell (echo $$LANG | cut -f 1 -d '_'))
 UNAME	=  $(shell uname)
@@ -43,24 +48,32 @@ LIBS	=
 CFLAGS	=  -mz80 --no-std-crt0 --data-loc 0
 LDFLAGS	=  sdc-cpm.rel $(RUNTIME).rel
 
+# If a program is specified on the command line TARGET will be defined.  
+# Force it to be rebuilt by deleting its object file.
+ifneq ($(TARGET),)
+   $(foreach target,$(TARGET),$(shell rm -f $(target).rel))
+endif
+
 .SUFFIXES:  # Disable built-in suffix rules (required for older version of make)
 
-# Making any object file dependent on the runtime means that the runtime is
-# updated first and any programs are relinked when it changes
-$(OBJECT): $(RUNTIME).rel sdc-cpm.rel  
-
-make:$(RUNTIME) sdc-cpm.rel $(PROGRAM) $(OBJECT)
+# Needs to be the first rule
+make: $(PROGRAM) $(OBJECT)
 
 all:clean $(PROGRAM) $(OBJECT)
+
+# Making any object file dependent on the runtime means that the runtime is
+# and ALL programs are rebuilt when it changes.
+$(OBJECT): $(RUNTIME).rel sdc-cpm.rel
 
 # Compile the runtime code
 runtime: $(RUNTIME).rel sdc-cpm.rel
 
+# Compile the C runtime 
 $(RUNTIME).rel: $(RUNTIME).s
 	sdasz80 -o $@ $<
 	@ls $@
 
-# Compile CP/M support code
+# Compile the supporting OS module
 sdc-cpm.rel: sdc-cpm.c
 	sdcc -mz80 -c $<
 	@rm -f sdc-cpm.asm sdc-cpm.lst sdc-cpm.sym
@@ -75,10 +88,10 @@ sdc-cpm.rel: sdc-cpm.c
 
 # Link (and delete working files)
 %.ihx: %.rel $(RUNTIME).rel sdc-cpm.rel
-	@sdcc $(CFLAGS) $(LDFLAGS) -o $@ $<
-	@rm -f $(subst .rel,.map,$<)|| true
-	@rm -f $(subst .rel,.noi,$<)|| true
-	@rm -f $(subst .rel,.lk,$<)|| true
+	sdcc $(CFLAGS) $(LDFLAGS) -o $@ $<
+	@rm -f $(subst .rel,.map,$<) || true
+	@rm -f $(subst .rel,.noi,$<) || true
+	@rm -f $(subst .rel,.lk,$<) || true
 #	@rm -f $< || true # Don;t delete .rel files (forces rebuild).
 
 # Load
@@ -87,10 +100,10 @@ sdc-cpm.rel: sdc-cpm.c
 	@rm -f $< || true
 	@ls --color $@
 	
-$(SOURCE:.c=): %: %.com
+$(SOURCE:.c=): %: %.com 
 
-backup: clean
-	@	@_date=`date +'%Y%m%d%H%M'`;_branch="`command -v git >/dev/null 2>&1 && git rev-parse --abbrev-ref HEAD 2>/dev/null || echo ""`"; \
+backup: 
+	@_date=`date +'%Y%m%d%H%M'`;_branch="`command -v git >/dev/null 2>&1 && git rev-parse --abbrev-ref HEAD 2>/dev/null || echo ""`"; \
 	if [ -z "$$_branch" ]; then \
 		archive="$(PROJECT)-$$_date.tar.gz"; \
 	else \
