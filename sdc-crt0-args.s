@@ -44,6 +44,8 @@
 ;
 ;** 25 Sep 26         - Added support for global variables - MT
 ;
+;** 27 Sep 26         - Fixed bug in stack pointer -MT
+;
 ;   To Do:            - Allow  command  line parameters to be  enclosed  in
 ;                       quotes.
 ;
@@ -74,15 +76,15 @@ start:          ld      a,#0x7f         ; Load with largest positive signed valu
 ;
 ;-- Set up stack and initialize static/global variables.
 ;
-init:           ld      (stack),sp      ; Save the stack pointer.
-                ld      sp,#stack
-                ld      bc,#l__INITIALIZER
+init:           ld      bc,#l__INITIALIZER
                 ld      a,b
                 or      a,c
                 jr      z,main          ; Nothing to do here.
                 ld      de,#s__INITIALIZED
                 ld      hl,#s__INITIALIZER
                 ldir                    ; Copy initial values to memory.
+;
+;-- Parse the command line.
 ;
 main:           ld      a,(#0x80)
                 or      a
