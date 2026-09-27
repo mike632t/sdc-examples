@@ -31,7 +31,11 @@ Examples:
 - `sdc-hello.c` — Of course the first example is "Hello World".
 - `sdc-mandlebrot.c` — ASCII Mandelbrot set.
 - `sdc-julia.c` — ASCII Julia set.
-- `sdc-args.c` — Display command line arguments.
+- `sdc-random.c` — Generate 500,000 random numbers using rand().
+- `sdc-calls.c` — Demonstrates calling assembler from C.
+
+- `sdc-echo.c` — Display command line arguments.
+- `sdc-calendar.c` — Display the calendar for the specified month or year.
 
 The examples were compiled using SDCC version 3.8 and tested on CP/M 2.2.
 
@@ -39,9 +43,7 @@ On 4Mhz Z80 generating the Julia set will take approximately 45 minutes!
 
 ### Known Issues
  
-This version uses the original compiler calling convention.  To compile the 
-code  with a sdcc version 4.1.12 or later you need to add `--sdcccall 0` to
-`CFLAGS` in the makefile.
+This version uses the original compiler calling convention.  
 
 ### Building the CP/M runtime libraries
 
