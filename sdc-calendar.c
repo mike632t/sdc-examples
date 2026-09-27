@@ -20,6 +20,7 @@
  *
  * 24 Nov 24   0.1   - Initial version - MT
  * 16 Sep 26   0.2   - Can display a whole year or a single month - MT
+ * 27 Sep 26         - Only prints blank lines between rows - MT
  * 
  * To Do             - Improve error checking in argument parser
  *                   - Add options for '--help', '--version'
@@ -120,11 +121,9 @@ void v_print_months(int i_start, int i_months, int i_year)  /* Display multiple 
             if (i_count < i_row - 1) printf(" "); else printf("\n");  /* Add some spaces between months or a newline */
          }
       }
-      
-      printf("\n");  /* Print a blank line between rows */
-
       i_start += 3;   /* Find start of the next row */
-      i_months -= i_row;  /* Reduce the number of months left to display by the number of months in a row */
+      i_months -= i_row;  /* Reduce the number of months left to display by the number of months in a row */ 
+      if (i_months > 0) printf ("\n");  /* Only print a blank line if there are more rows left */
    }
 }
 
@@ -137,7 +136,6 @@ int main(int argc, char* argv[])
    if (argc == 2)
    {
       i_year = atoi(argv[1]);
-
       if (i_year > 1752)  /* Check year is valid */
       {
          v_print_months(1, 12, i_year);  /* Display all 12 months in the year */
@@ -149,7 +147,6 @@ int main(int argc, char* argv[])
    {
       i_month = atoi(argv[1]);
       i_year = atoi(argv[2]);
-
       if (i_month > 0 && i_month < 13 && i_year > 1752)  /* Check month and year are valid */
       {
          v_print_months(i_month, 1, i_year);  /* Just display a single month */
