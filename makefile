@@ -27,6 +27,8 @@
 #                    - Specifying a program by name forces it to be rebuilt
 #                      allowing  programs to be rebuilt against a different 
 #                      runtime - MT
+#  27 Sep 27         - Display build commands - MT
+#                    - Define the commit_id and compiler version - MT
 #
 PROJECT	=  sdc-examples
 
@@ -43,10 +45,18 @@ FILES	=  $(SOURCE) sdc-cpm.c $(OTHER) $(BACKUP) $(INCLUDE) LICENSE README.md mak
 LANG	=  LANG_$(shell (echo $$LANG | cut -f 1 -d '_'))
 UNAME	=  $(shell uname)
 
+CC	=  sdcc
+AS	=  sdasz80
 RUNTIME	=  sdc-crt0
 LIBS	=
 CFLAGS	=  -mz80 --no-std-crt0 --data-loc 0
 LDFLAGS	=  sdc-cpm.rel $(RUNTIME).rel
+
+COMPILER=  `$(CC) -v 2>&1 | sed -n 's/^\([A-Za-z][A-Za-z]*\).* \([0-9][0-9]*\.[0-9][0-9]*\(\.[0-9][0-9]*\)\?\) .*/\L\1\E \2/p'`
+COMMIT	=  $(shell command -v git >/dev/null 2>&1 && git log -1 HEAD --format=%h 2>/dev/null)
+
+CFLAGS	+= $(shell if [ -n "$(COMMIT)" ]; then echo "-DCOMMIT_ID='\"[Commit Id : $(COMMIT)]\"'"; fi)
+CFLAGS	+= $(shell if [ -n "$(COMPILER)" ]; then echo "-D__compiler__='\"$(COMPILER)\"'"; fi)
 
 # If a program is specified on the command line TARGET will be defined.  
 # Force it to be rebuilt by deleting its object file.
@@ -70,18 +80,18 @@ runtime: $(RUNTIME).rel sdc-cpm.rel
 
 # Compile the C runtime 
 $(RUNTIME).rel: $(RUNTIME).s
-	sdasz80 -o $@ $<
+	$(AS) -o $@ $<
 	@ls $@
 
 # Compile the supporting OS module
 sdc-cpm.rel: sdc-cpm.c
-	sdcc -mz80 -c $<
+	$(CC) -mz80 -c $<
 	@rm -f sdc-cpm.asm sdc-cpm.lst sdc-cpm.sym
 	@ls $<
 
 # Compile (and delete any working files)
 %.rel: %.c
-	sdcc $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 	@rm -f $(subst .c,.asm,$<)
 	@rm -f $(subst .c,.sym,$<)
 	@rm -f $(subst .c,.lst,$<)
