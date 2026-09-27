@@ -44,9 +44,11 @@
 ;
 ;** 25 Sep 26         - Added support for global variables - MT
 ;
-;** 27 Sep 26         - Fixed bug in stack pointer -MT
+;** 27 Sep 26         - Fixed bug in stack pointer - MT
+;                     - Consolodated command line parser - MT
 ;
-;   To Do:            - Allow  command  line parameters to be  enclosed  in
+;   To Do:            - Review parser (some duplicate code?).
+;                     - Allow  command  line parameters to be  enclosed  in
 ;                       quotes.
 ;
                 .module crt0
@@ -63,14 +65,13 @@
 ;
                 jp      start           ; Jump the start of program.
 ;
-err_msg:
-                .str    "Z80 processor required."
+error:          .str    "Z80 processor required."
                 .db     13,10,'$'
 ;
 start:          ld      a,#0x7f         ; Load with largest positive signed value.
                 inc     a               ; Incrementing should result in an overflow.
                 jp      pe,init         ; Z80 processor set the parity flag to signify overflow (8080 doesn't).
-                ld      de,#err_msg     ; Display error message.
+                ld      de,#error       ; Display error message.
                 ld      c,#0x09         ; Print string.
                 jp      0x0005          ; Jump to BDOS (when BDOS returns program will exit).
 ;
@@ -86,7 +87,36 @@ init:           ld      bc,#l__INITIALIZER
 ;
 ;-- Parse the command line.
 ;
-main:           ld      a,(#0x80)
+main:           call    parse
+;                       
+;-- Command line processing done.
+;
+done:		ld 	(stack),sp	; Save the stack pointer.
+		ld	sp,#stack
+                push    de
+                ld      de,#_HEAP_start ; Save the address of the heap 
+                ld      (_heap_top),de
+                pop     de
+                ld      hl,#0x0100      ; Address of argv[]
+                ld      b,#0            ; C contains the number of arguments.
+                push    hl              ; Pass info as parameters to "main"
+                push    bc
+;
+                call    _main
+;
+;-- Exit program when main is finished.
+;
+		ld	sp,(stack)	; Restore original stack pointer
+                ret                     ; and return.
+;
+;-- Alternatively perform a warm reset.
+;
+;               ld      c,#0            ; Call BDOS RESET function
+;               jp      5
+;                       
+;-- Begin processing the command line
+;
+parse:          ld      a,(#0x80)
                 or      a
                 ld      c,#0
                 jr      z,done
@@ -117,46 +147,15 @@ main:           ld      a,(#0x80)
                 inc     ix
                 inc     c
                 ld      hl,#0x81        ; Address of command tail
-                call    parse
-;                       
-;-- Command line processing done.
-;
-done:		ld 	(stack),sp	; Save the stack pointer.
-		ld	sp,#stack
-                ld      hl,#0x0100      
-                ld      b,#0            ; C contains the number of arguments.
-                push    hl              ; Pass info as parameters to "main"
-                push    bc
-;
-;-- Call the "main" function
-;
-                push    de
-                ld      de,#_HEAP_start ; Save the address of the heap 
-                ld      (_heap_top),de
-                pop     de
-;
-                call    _main
-;
-;-- Exit program when main is finished.
-;
-		ld	sp,(stack)	; Restore original stack pointer
-                ret                     ; and return.
-;
-;-- Alternatively perform a warm reset.
-;
-;               ld      c,#0            ; Call BDOS RESET function
-;               jp      5
-;                       
-;-- Begin processing the command line
-;
-parse:          ld      a,(hl)
+loop:
+                ld      a,(hl)
                 or      a               ; Command line end found?
                 ret     z
 
                 cp      #32             ; Skip blank spaces.
                 jr      nz,next
                 inc     hl
-                jr      parse
+                jr      loop
 ;
 ;-- Found another argument so add its address to array.
 ;
@@ -172,7 +171,7 @@ next:           ld      (ix),l          ; Copy address to location pointed to by
 ;
 ;-- Skip chars until you find a space or the end of the command line.
 ;
-loop:           ld      a,(hl)
+skip:           ld      a,(hl)
                 or      a               ; Command line end found?
                 ret     z
 
@@ -180,10 +179,10 @@ loop:           ld      a,(hl)
                 jr      nz,nospc
                 ld      (hl),#0         ; If space found, set it to zero (string terminator)...
                 inc     hl
-                jr      parse           ; ...and start again.
+                jr      loop           ; ...and start again.
 
 nospc:          inc     hl
-                jr      loop
+                jr      skip
 ;
 ;-- Define order of storage areas (place data after program code).
 ;
