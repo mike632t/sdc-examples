@@ -45,6 +45,9 @@ On 4Mhz Z80 generating the Julia set will take approximately 45 minutes!
  
 This version uses the original compiler calling convention.  
 
+If a program crashes (executing an illegal instruction) or just hangs it is
+most likely to be because it has run out of stack space.
+
 ### Building the CP/M runtime libraries
 
 The C runtime is written for SDCC's Z80 assembler and is used to define the 
