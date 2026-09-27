@@ -26,9 +26,14 @@
 ;
 ;** 24 Sep 26         - Allocate 128 bytes stack space below the heap - MT
 ;
+;** 27 Sep 26         - Added support for global variables - MT
+;
                 .module crt0
 ;
                 .globl  _main
+                .globl  l__INITIALIZER
+                .globl  s__INITIALIZER
+                .globl  s__INITIALIZED
 ;
                 .area   _HEADER (ABS)
                 .org    0x0100
@@ -37,30 +42,50 @@
 ;
                 jp      start           ; Jump the start of program.
 ;
-err_msg:
-                .str    "Z80 processor required."
+error:          .str    "Z80 processor required."
                 .db     13,10,'$'
 ;
 start:          ld      a,#0x7f         ; Load with largest positive signed value.
                 inc     a               ; Incrementing should result in an overflow.
                 jp      pe,init         ; Z80 processor set the parity flag to signify overflow (8080 doesn't).
-                ld      de,#err_msg     ; Display error message.
+                ld      de,#error       ; Display error message.
                 ld      c,#0x09         ; Print string.
                 jp      0x0005          ; Jump to BDOS (when BDOS returns program will exit).
 ;
-init:           ld      (stack),sp      ; Save the stack pointer.
-                ld      sp,#stack
+;-- Set up stack and initialize static/global variables.
+;
+init:           ld      bc,#l__INITIALIZER
+                ld      a,b
+                or      a,c
+                jr      z,main          ; Nothing to do here.
+                ld      de,#s__INITIALIZED
+                ld      hl,#s__INITIALIZER
+                ldir                    ; Copy initial values to memory.
+;
+;-- Parse the command line.
+;
+main:           ld 	(stack),sp	; Save the stack pointer.
+		ld	sp,#stack
+                push    de
+                ld      de,#_HEAP_start ; Save the address of the heap 
+                ld      (_heap_top),de
+                pop     de
                 call    _main           ; Call main().
                 ld      sp,(stack)      ; Restore original stack pointer
                 ret                     ; and return.
 ;
-;-- Place data after program code, and heap after data
+;-- Define order of storage areas (place data after program code).
 ;
-                .area   _CODE           ; Program code area
-                .area   _DATA           ; Data area
-                .ds     128             ; Stack space 128 bytes.
+;               .area   _HOME
+                .area   _CODE           ; Program code area.
+                .area   _INITIALIZER
+                .area   _INITIALIZED    ; Global variables.
+                .area   _DATA           ; Data area.
+                .ds     128             ; Stack space 512 bytes.
 stack:          .dw     0
-_heap_top::     .dw     0               ; Address of the start of the heap area
+;               .area   _BSS
+                .area   _HEAP           ; Place heap after data.
+_heap_top::     .dw     0               ; Address of the start of the heap area.
 ;
 _HEAP_start::                           ; Heap space.
 ;
