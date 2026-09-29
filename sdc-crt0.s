@@ -28,12 +28,18 @@
 ;
 ;** 27 Sep 26         - Added support for global variables - MT
 ;
+;** 29 Sep 26         - Heap now allocated by standard library - MT
+;
+;** To Do:            - Move stack to top of TPA so it extends downwards to
+;                       the heap?
+;
                 .module crt0
 ;
                 .globl  _main
                 .globl  l__INITIALIZER
                 .globl  s__INITIALIZER
                 .globl  s__INITIALIZED
+                .globl  ___sdcc_heap_init
 ;
                 .area   _HEADER (ABS)
                 .org    0x0100
@@ -64,12 +70,9 @@ init:           ld      bc,#l__INITIALIZER
 ;
 ;-- Parse the command line.
 ;
-main:           ld 	(stack),sp	; Save the stack pointer.
-		ld	sp,#stack
-                push    de
-                ld      de,#_HEAP_start ; Save the address of the heap 
-                ld      (_heap_top),de
-                pop     de
+main:           ld      (stack),sp      ; Save the stack pointer.
+                ld      sp,#stack
+                call    ___sdcc_heap_init 
                 call    _main           ; Call main().
                 ld      sp,(stack)      ; Restore original stack pointer
                 ret                     ; and return.
@@ -81,11 +84,8 @@ main:           ld 	(stack),sp	; Save the stack pointer.
                 .area   _INITIALIZER
                 .area   _INITIALIZED    ; Global variables.
                 .area   _DATA           ; Data area.
-                .ds     128             ; Stack space 512 bytes.
+                .ds     128             ; Stack space 128 bytes.
 stack:          .dw     0
 ;               .area   _BSS
                 .area   _HEAP           ; Place heap after data.
-_heap_top::     .dw     0               ; Address of the start of the heap area.
-;
-_HEAP_start::                           ; Heap space.
 ;
