@@ -31,6 +31,7 @@
 #                    - Define the commit_id and compiler version - MT
 #  29 Sep 26         - Added ability to generate HEX files (compatible with
 #                      LOAD) - MT
+#                    - Link runtime before cpm module - MT
 #
 PROJECT	=  sdc-examples
 
@@ -53,7 +54,7 @@ AS	=  sdasz80
 RUNTIME	=  sdc-crt0
 LIBS	=
 CFLAGS	=  -mz80 --no-std-crt0 --data-loc 0
-LDFLAGS	=  sdc-cpm.rel $(RUNTIME).rel
+LDFLAGS	=  $(RUNTIME).rel sdc-cpm.rel
 
 COMPILER=  `$(CC) -v 2>&1 | sed -n 's/^\([A-Za-z][A-Za-z]*\).* \([0-9][0-9]*\.[0-9][0-9]*\(\.[0-9][0-9]*\)\?\) .*/\L\1\E \2/p'`
 COMMIT	=  $(shell command -v git >/dev/null 2>&1 && git log -1 HEAD --format=%h 2>/dev/null)
