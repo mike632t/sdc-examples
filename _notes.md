@@ -47,7 +47,7 @@ Z80  cycles: 34,547
 In  this case the program produced by the new compiler is 42 bytes  shorter 
 and almost twice as fast!
 
-The difference becomes even greater when 
+The difference becomes even greater when passing parameters to functions.
 
 ```
 #include "stdio.h"         /* Provides printf() for printing output */
@@ -95,10 +95,49 @@ RECORDS WRITTEN 1C
 ```
 Z80  cycles: 24,717,667,069
 ```
-
 This time the new code is 247 bytes shorter and almost three times quicker!
 
+```
+A>load test 
 
+FIRST ADDRESS 0100
+LAST  ADDRESS 0F17
+BYTES READ    0CEA
+RECORDS WRITTEN 1D
+
+
+A>test 
+ 33153   24609   59801   11787   46494   55715   12071   17913   39973   27874  
+ 61932   59631   48928    6199   46518   61313   14614   64847   47330   20358  
+ 19648   64214    3998   16126   40926   38630   29076   29385   21570    3448  
+ 37152    8480   51576   14146   40713   40836   63402   39355   23833    8433  
+  1373    9096    7419   10827   50124   64478   49364   11137   40820   17254  
+```
+```
+Z80  cycles: 3,560,162
+```
+
+```
+A>load test 
+
+FIRST ADDRESS 0100
+LAST  ADDRESS 0E4C
+BYTES READ    0C1F
+RECORDS WRITTEN 1B
+
+
+A>test
+ 33153   24609   59801   11787   46494   55715   12071   17913   39973   27874  
+ 61932   59631   48928    6199   46518   61313   14614   64847   47330   20358  
+ 19648   64214    3998   16126   40926   38630   29076   29385   21570    3448  
+ 37152    8480   51576   14146   40713   40836   63402   39355   23833    8433  
+  1373    9096    7419   10827   50124   64478   49364   11137   40820   17254  
+
+A>
+```
+```
+Z80  cycles: 2,525,036
+```
 
 ### SDCC Calling Convention
 
