@@ -21,21 +21,23 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * 31 Aug 23   0.1   - Initial version - MT
- * 27 Aug 27   0.2   - Replaced the standard random number generator with a
+ * 27 Aug 26   0.2   - Replaced the standard random number generator with a
  *                     random using xorshift operations and a locally saved
  *                     seed - MT
+ * 29 Sep 26   0.3   - Random  number  generator always returns a  positive 
+ *                     integer - MT 
  * 
  * To Do             - 
  *
  */
 
 #define  NAME        "sdc-call"
-#define  VERSION     "0.1"
-#define  BUILD       "0001"
+#define  VERSION     "0.3"
+#define  BUILD       "0003"
 #define  AUTHOR      "MT"
 #define  COPYRIGHT   (__DATE__ + 7) /* Extract copyright year from date. */
 
-#define  MAX_ROWS    5
+#define  MAX_ROWS    50000
 
 #include "stdio.h"            /* Provides printf() for printing output. */
 
@@ -58,8 +60,11 @@
  * 
  * http://www.retroprogramming.com/2017/07/xorshift-pseudorandom-numbers-in-z80.html
  * 
- * Since this function takes no arguments changes to the calling convention 
- * can be ignored.
+ * 27 Aug 26   0.1   - Initial version - MT
+ * 29 Sep 26   0.2   - Always returns a positive integer (making the result
+ *                     a signed integer allows the performance of this code
+ *                     to be compared to the standard rand() function) - MT
+ * 
  * 
  */
 
@@ -83,9 +88,10 @@ unsigned int rand() __naked
       xor   h
       ld    h,a         ; Result in HL.
       ld    (seed),hl   ; Save new seed.
+      res   7,h         ; Clear the sign bit.
       ret
 ;
-      .area _DATA       ; Data area
+      .area _DATA       ; Data area.
 seed: .dw   1
    __endasm;
 }
@@ -99,7 +105,7 @@ int main()
    for( i_count = 1; i_count <= MAX_ROWS; i_count++)  
    {
       for( i_counter = 0; i_counter < 10; i_counter++)  /* Ten numbers per line */
-         printf("%6u\t", rand());
+         printf("%6d\t", rand());
       printf("\n");
    }
    return 0;
