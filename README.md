@@ -133,13 +133,18 @@ do not.
 
 The following commands use make to build two programs including support for 
 argument passing using `argc` and `argv[]` and then builds the rest.
-
 ```
 make clean 
 
 make RUNTIME=sdc-crt0-args sdc-calendar sdc-echo
 
 make
+```
+
+The makefile also allows toy to produce a HEX file compatible with the CP/M 
+load command.
+```
+make RUNTIME=sdc-crt0-args sdc-calendar.hex
 ```
 
 ### Known Issues

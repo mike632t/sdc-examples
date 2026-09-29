@@ -27,8 +27,10 @@
 #                    - Specifying a program by name forces it to be rebuilt
 #                      allowing  programs to be rebuilt against a different 
 #                      runtime - MT
-#  27 Sep 27         - Display build commands - MT
+#  27 Sep 26         - Display build commands - MT
 #                    - Define the commit_id and compiler version - MT
+#  29 Sep 26         - Added ability to generate HEX files (compatible with
+#                      LOAD) - MT
 #
 PROJECT	=  sdc-examples
 
@@ -37,6 +39,7 @@ OTHER	=  $(wildcard sdc-*.s)
 INCLUDE	=  $(wildcard sdc-*.h) # Automatically get all include files
 BACKUP	=  $(wildcard sdc-*.c.[0-9]) $(wildcard sdc-*.s.[0-9])
 OBJECT	=  $(SOURCE:.c=.rel)
+HEX	=  $(SOURCE:.c=.hex)
 PROGRAM	=  $(SOURCE:.c=.com)
 
 TARGET	=  $(filter $(SOURCE:.c=),$(MAKECMDGOALS))
@@ -104,12 +107,18 @@ sdc-cpm.rel: sdc-cpm.c
 	@rm -f $(subst .rel,.lk,$<) || true
 #	@rm -f $< || true # Don;t delete .rel files (forces rebuild).
 
-# Load
+# Generate executable
 %.com: %.ihx
 	@sdobjcopy -Iihex -Obinary --gap-fill 0 $< $@
 	@rm -f $< || true
 	@ls --color $@
-	
+
+# Optional generates HEX file
+%.hex: %.ihx
+	@{ head -n -1 $< | sort -k1.4,1.7; tail -n 1 $<; } > $@
+	@rm -f $< || true
+	@ls --color $@
+		
 $(SOURCE:.c=): %: %.com 
 
 backup: 
@@ -122,4 +131,4 @@ backup:
 	tar -czpf "../$$archive" $(FILES) && cd .. && ls --color $$archive 2>/dev/null || ls ../$$archive 2>/dev/null || true ls --color "../$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz"; 
 
 clean:
-	@rm -f $(OBJECT) $(PROGRAM) $(RUNTIME).rel sdc-cpm.rel
+	@rm -f $(HEX) $(OBJECT) $(PROGRAM) $(RUNTIME).rel sdc-cpm.rel
