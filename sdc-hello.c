@@ -38,6 +38,6 @@ void main()
    
    for (i_count = 0; i_count <= 9; i_count++)
    {
-      puts("Hello World !!");
+      puts("Hello there !!");
    }
 }
