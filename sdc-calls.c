@@ -64,6 +64,7 @@
  * 29 Sep 26   0.2   - Always returns a positive integer (making the result
  *                     a signed integer allows the performance of this code
  *                     to be compared to the standard rand() function) - MT
+ *                   - New calling convention returns value in DE - MT
  * 
  * 
  */
@@ -89,6 +90,9 @@ unsigned int rand() __naked
       ld    h,a         ; Result in HL.
       ld    (seed),hl   ; Save new seed.
       res   7,h         ; Clear the sign bit.
+#if __SDCCCALL == 1
+      ex    de,hl       ; Return result in DE.
+#endif
       ret
 ;
       .area _DATA       ; Data area.

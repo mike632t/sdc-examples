@@ -19,7 +19,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * 20 Aug 23   0.1   - Initial version - MT
- * 29 Sep 26   0.2   - Added support for both old and new calling standards 
+ * 29 Sep 26   0.2   - Added support for both old and new calling standards
  *                     allowing code to be built without modification using
  *                     either version - MT
  * 
@@ -36,29 +36,41 @@
 
 #include "sdc-cpm.h"
 
+#define  CPM$BDOS    0x0005         ;
+
+#if __SDCCCALL == 1
+
 unsigned int bdos(unsigned char c_byte, unsigned int i_word) __naked
 {
-	c_byte;
-	i_word;
-	__asm
-#if __SDCCCALL == 1
-         ld    c,l         ; Move byte into C. DE already contains word.
-#else
-         ld    hl,#2       ; Offset to skip over the return address.
-         add   hl,sp       ; Address of first arg in HL.
-         ld		c,(hl)      ; Load byte into C.
-         inc	hl          ; Address of second arg in HL.
-         ld		e,(hl)      ; Get lo-byte of word.
-         inc	hl
-         ld		d,(hl)      ; Get hi-byte of word.
-#endif
-         call	#5          ; Call BDOS
-         ld    a,h         ; Return result in a
-         ret
-	__endasm;
+   c_byte;
+   i_word;
+   __asm
+         ld    c,a            ; Move byte in A to C.
+         jp    CPM$BDOS       ; Character already in E.
+   __endasm;
 }
 
-int putchar(int c) 
+#else
+
+unsigned int bdos(unsigned char c_byte, unsigned int i_word) __naked
+{
+   c_byte;
+   i_word;
+   __asm
+         ld    hl,#2          ; Offset into stack.
+         add   hl,sp          ; Get address of byte.
+         ld    c,(hl)         ; Save BDOS function in C.
+         inc   hl             ; Increment pointer.
+         ld    e,(hl)         ; Save word in DE (low byte hi byte).
+         inc   hl
+         ld    d,(hl)
+         jp    CPM$BDOS       ; Return from BDOS.
+   __endasm;
+}
+
+#endif
+
+int putchar(int c)
 {
    if (c == '\n') bdos(C_WRITE, '\r');
    bdos(C_WRITE, c);
