@@ -3,9 +3,9 @@
 
 - [ ] Check compiler calling convention in assembler code
 
-    - [ ] BDOS interface
+    - [X] BDOS interface
 
-    - [ ] Standard runtime
+    - [X] Standard runtime
    
     - [ ] Extended runtime
    
