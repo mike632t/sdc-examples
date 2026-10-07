@@ -32,6 +32,7 @@
 #  29 Sep 26         - Added ability to generate HEX files (compatible with
 #                      LOAD) - MT
 #                    - Link runtime before cpm module - MT
+#  07 Oct 26         - Use compiler flags when compiling sdc-cpm.c - MT
 #
 PROJECT	=  sdc-examples
 
@@ -89,7 +90,7 @@ $(RUNTIME).rel: $(RUNTIME).s
 
 # Compile the supporting OS module
 sdc-cpm.rel: sdc-cpm.c
-	$(CC) -mz80 -c $<
+	$(CC) $(CFLAGS) -mz80 -c $<
 	@rm -f sdc-cpm.asm sdc-cpm.lst sdc-cpm.sym
 	@ls $<
 
