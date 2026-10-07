@@ -45,21 +45,34 @@
 ;** 25 Sep 26         - Added support for global variables - MT
 ;
 ;** 27 Sep 26         - Fixed bug in stack pointer - MT
-;                     - Consolodated command line parser - MT
 ;
-;   To Do:            - Review parser (some duplicate code?).
-;                     - Allow  command  line parameters to be  enclosed  in
-;                       quotes.
+;** 07 Oct 26         - Moved command line parser to sdc-cpm.c to allow the
+;                       compiler to select the calling convention - MT
 ;
+;   To Do:            - 
+;
+;
+Asc$NUL         .equ    0x00            ; <Ctrl/@> - Null.
+Asc$SP          .equ    0x20            ; Space.
+;
+CPM$Buff        .equ    0x0080          ; Start of CP/M file buffer 80..FFH.
+CPM$Boot        .equ    0x0000          ; BIOS reboot.
+CPM$Load        .equ    0x0100          ; Program load address.
+CPM$BDOS        .equ    0x0005
+;
+BDOS$PrtStr     .equ    0x09            ; Print a string to CON:.
+
                 .module crt0
 ;
                 .globl  _main
                 .globl  l__INITIALIZER
                 .globl  s__INITIALIZER
                 .globl  s__INITIALIZED
+                .globl  ___parse
+                .globl  ___sdcc_heap_init
 ;
                 .area   _HEADER (ABS)
-                .org    0x0100
+                .org    CPM$Load
 ;
 ;-- Check CPU type (as sdcc requires a Z80).
 ;
@@ -72,117 +85,36 @@ start:          ld      a,#0x7f         ; Load with largest positive signed valu
                 inc     a               ; Incrementing should result in an overflow.
                 jp      pe,init         ; Z80 processor set the parity flag to signify overflow (8080 doesn't).
                 ld      de,#error       ; Display error message.
-                ld      c,#0x09         ; Print string.
-                jp      0x0005          ; Jump to BDOS (when BDOS returns program will exit).
+                ld      c,#BDOS$PrtStr  ; Print string.
+                jp      CPM$BDOS        ; Jump to BDOS (when BDOS returns program will exit).
 ;
 ;-- Set up stack and initialize static/global variables.
 ;
 init:           ld      bc,#l__INITIALIZER
                 ld      a,b
                 or      a,c
-                jr      z,main          ; Nothing to do here.
+                jr      z,done          ; Nothing to do here.
                 ld      de,#s__INITIALIZED
                 ld      hl,#s__INITIALIZER
                 ldir                    ; Copy initial values to memory.
 ;
 ;-- Parse the command line.
 ;
-main:           call    parse
-;                       
-;-- Command line processing done.
-;
-done:		ld 	(stack),sp	; Save the stack pointer.
-		ld	sp,#stack
-                push    de
-                ld      de,#_HEAP_start ; Save the address of the heap 
-                ld      (_heap_top),de
-                pop     de
-                ld      hl,#0x0100      ; Address of argv[]
-                ld      b,#0            ; C contains the number of arguments.
-                push    hl              ; Pass info as parameters to "main"
-                push    bc
-;
-                call    _main
+done:           ld      (stack),sp      ; Save the stack pointer.
+                ld      sp,#stack
+                call    ___sdcc_heap_init 
+                call    ___parse        ; Parser calls main()
 ;
 ;-- Exit program when main is finished.
 ;
-		ld	sp,(stack)	; Restore original stack pointer
+                ld      sp,(stack)      ; Restore original stack pointer
                 ret                     ; and return.
 ;
 ;-- Alternatively perform a warm reset.
 ;
 ;               ld      c,#0            ; Call BDOS RESET function
 ;               jp      5
-;                       
-;-- Begin processing the command line
-;
-parse:          ld      a,(#0x80)
-                or      a
-                ld      c,#0
-                jr      z,done
-;
-;-- Terminate command line with an ASCII NUL this will tell us when to stop 
-;   scanning and terminate the last argument.
-;
-                ld      hl,#0x81
-                ld      bc,(#0x80)
-                ld      b,#0
-                add     hl,bc
-                ld      (hl),#0
-;                       
-;-- Initialize registers and jump to the loop routine.
-;                       
-                xor     a
-                ld      c,a             ; Clear number of parameters.
-                ld      hl,#0x80        ; Address of the command tail.
-                ld      (hl),a          ; Make argv[0] a nul string.
 
-                ld      ix,#0x0100      ; Over writes the CPU type checking.
-;
-;-- Add argv[0] add its address to array.
-;                       
-                ld      (ix),l
-                ld      1(ix),h
-                inc     ix
-                inc     ix
-                inc     c
-                ld      hl,#0x81        ; Address of command tail
-loop:
-                ld      a,(hl)
-                or      a               ; Command line end found?
-                ret     z
-
-                cp      #32             ; Skip blank spaces.
-                jr      nz,next
-                inc     hl
-                jr      loop
-;
-;-- Found another argument so add its address to array.
-;
-next:           ld      (ix),l          ; Copy address to location pointed to by ix.
-                ld      1(ix),h
-                inc     ix              ; Increment the pointer.
-                inc     ix
-                inc     c               ; Increment the counter.
-                
-                ld      a,c             ; Check the number of parameters
-                cp      #10             ; Max 16 parameters... 
-                ret     nc              ; Give up if there are too many.
-;
-;-- Skip chars until you find a space or the end of the command line.
-;
-skip:           ld      a,(hl)
-                or      a               ; Command line end found?
-                ret     z
-
-                cp      #32
-                jr      nz,nospc
-                ld      (hl),#0         ; If space found, set it to zero (string terminator)...
-                inc     hl
-                jr      loop           ; ...and start again.
-
-nospc:          inc     hl
-                jr      skip
 ;
 ;-- Define order of storage areas (place data after program code).
 ;
@@ -195,7 +127,4 @@ nospc:          inc     hl
 stack:          .dw     0
 ;               .area   _BSS
                 .area   _HEAP           ; Place heap after data.
-_heap_top::     .dw     0               ; Address of the start of the heap area.
-;
-_HEAP_start::                           ; Heap space.
 ;
