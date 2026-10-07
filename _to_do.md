@@ -7,7 +7,7 @@
 
     - [X] Standard runtime
    
-    - [ ] Extended runtime
+    - [X] Extended runtime
    
     - [ ] Examples
 
@@ -15,3 +15,7 @@
 
       https://stackoverflow.com/questions/17354905/
 
+- [ ] Update readme to include build instructions
+
+      make clean RUNTIME=sdc-crt0-args sdc-calendar sdc-echo sdc-args
+      make RUNTIME=sdc-crt0
