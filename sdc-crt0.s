@@ -30,6 +30,8 @@
 ;
 ;** 29 Sep 26         - Heap now allocated by standard library - MT
 ;
+;** 07 Oct 26         - Increased stack size to 192 bytes - MT
+;
 ;** To Do:            - Move stack to top of TPA so it extends downwards to
 ;                       the heap?
 ;
@@ -84,7 +86,7 @@ main:           ld      (stack),sp      ; Save the stack pointer.
                 .area   _INITIALIZER
                 .area   _INITIALIZED    ; Global variables.
                 .area   _DATA           ; Data area.
-                .ds     128             ; Stack space 128 bytes.
+                .ds     192             ; Stack space 192 bytes.
 stack:          .dw     0
 ;               .area   _BSS
                 .area   _HEAP           ; Place heap after data.
