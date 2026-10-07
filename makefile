@@ -33,6 +33,7 @@
 #                      LOAD) - MT
 #                    - Link runtime before cpm module - MT
 #  07 Oct 26         - Use compiler flags when compiling sdc-cpm.c - MT
+#                    - Delete both runtime files - MT
 #
 PROJECT	=  sdc-examples
 
@@ -133,4 +134,4 @@ backup:
 	tar -czpf "../$$archive" $(FILES) && cd .. && ls --color $$archive 2>/dev/null || ls ../$$archive 2>/dev/null || true ls --color "../$(PROJECT)-`date +'%Y%m%d%H%M'`.tar.gz"; 
 
 clean:
-	@rm -f $(HEX) $(OBJECT) $(PROGRAM) $(RUNTIME).rel sdc-cpm.rel
+	@rm -f $(HEX) $(OBJECT) $(PROGRAM) $(RUNTIME).rel sdc-crt0-args.rel sdc-crt0.rel sdc-cpm.rel
