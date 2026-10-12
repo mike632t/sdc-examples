@@ -48,15 +48,13 @@ On 4Mhz Z80 generating the Julia set will take approximately 45 minutes!
 
 ### Known Issues
  
-This version uses the original compiler calling convention.  
-
 If a program crashes (executing an illegal instruction) or just hangs it is
 most likely to be because it has run out of stack space.
 
 ### Building the CP/M runtime libraries
 
 The C runtime is written for SDCC's Z80 assembler and is used to define the 
-starting address and to call main().
+starting address and to call init() (which in turn calls main())..
 
 Compile using:
 ```
@@ -66,7 +64,10 @@ sdasz80 -o sdc-crt0-args.s
 ```
 
 To be able to interact with the operating system programs will use the CP/M
-BDOS interface defined in the CP/M library.  
+BDOS interface and system specific functions defined in the OS module.  
+
+Since the code in the C runtime calls init() in this module this allows the 
+compiler to automatically use the correct calling convention version.
 
 Compile using:
 ```
@@ -75,9 +76,10 @@ sdcc -mz80 -c sdc-cpm.c
 
 ### Known Issues
  
-Currently  the only function available is `putchar()` which allows programs 
-to display their output on the console but nothing else is included  (there 
-is no way to enter text and no support for files of any type).
+The only functions available are `putchar()` and `getchar()` which allows a
+program to display it's output on the console and read a character from the
+console but nothing else is included  (there is no support for files of any 
+type).
 
 I did say this was a minimal runtime environment!
 
@@ -93,7 +95,36 @@ data types won't be the same as on modern 64-bit systems.
 To compile a program you need to invoke the compiler telling it not to  use 
 the standard runtime library and to link program with both the libraries.
 
-Compile a program using:
+A makefile is provided which will compile all the example programs and link
+them  with the default runtime library, or you can specify which runtime to 
+use and which programs to compile.  
+
+To minimise the size of each program two versions are provided.
+
+- 'sdc-crt0' supports just console output (128 byte stack).
+
+- `sdc-crt0-args` passes `argc` and `argv[]` to `main()` (512 byte stack).
+
+Programs  that require a specific runtime should be built before those that
+do not.
+
+The following commands use make to build two programs including support for 
+argument passing using `argc` and `argv[]` and then builds the rest.
+```
+make clean 
+
+make RUNTIME=sdc-crt0-args sdc-calendar sdc-echo
+
+make
+```
+
+The makefile also allows you to produce a HEX file compatible with the CP/M 
+load command.
+```
+make RUNTIME=sdc-crt0-args sdc-calendar.hex
+```
+
+Alternatively you can compile a program using:
 ```
 sdcc -mz80 --no-std-crt0 --data-loc 0 sdc-crt0.rel sdc-cpm.rel program.c
 ```
@@ -121,39 +152,6 @@ sdobjcopy -Iihex -Obinary --gap-fill 0 program.ihx program.com
 -Obinary       Output file type is binary
 --gap-fill 0   Fill any gaps with '0's
 ```
-
-A makefile is provided which will compile all the example programs and link
-them  with the default runtime library, or you can specify which runtime to 
-use and which programs to compile.  
-
-To minimise the size of each program two versions are provided.
-
-- 'sdc-crt0' supports just console output (128 byte stack).
-
-- `sdc-crt0-args` passes `argc` and `argv[]` to `main()` (512 byte stack).
-
-Programs  that require a specific runtime should be built before those that
-do not.
-
-The following commands use make to build two programs including support for 
-argument passing using `argc` and `argv[]` and then builds the rest.
-```
-make clean 
-
-make RUNTIME=sdc-crt0-args sdc-calendar sdc-echo
-
-make
-```
-
-The makefile also allows toy to produce a HEX file compatible with the CP/M 
-load command.
-```
-make RUNTIME=sdc-crt0-args sdc-calendar.hex
-```
-
-### Known Issues
-
-Currently neither runtime supports static or global variables.  
 
 ### Compatibility
 
