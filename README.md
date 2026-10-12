@@ -17,26 +17,30 @@ system.
 
 It also contains a small collection of example programs.
 
-Note - Newer versions of the SDCC compiler use a different calling standard 
-so the runtime files below wont work with with SDCC 4.2.0 or later.  
+The compiler will automatically select the correct version of the operating 
+system specific routines needed to support the compiler's calling standard.
 
 ### Contents
 
 Runtime files:
 - `sdc-crt0.s` — Minimal CP/M runtime support.
-- `sdc-cpm.c` — Provides the putchar() function used by printf() etc.
 - `sdc-crt0-args.s` — CP/M runtime with argument parser.
+- `sdc-cpm.c` — Provides the operating system support functions.
 
 Examples:
 - `sdc-hello.c` — Of course the first example is "Hello World".
-- `sdc-mandlebrot.c` — ASCII Mandelbrot set.
+- `sdc-calls.c` — A random number generator showing how to call assembler.
+- `sdc-getchar.c` — Uses getchar() to read from the keyboard.
 - `sdc-julia.c` — ASCII Julia set.
-- `sdc-static.c` — Checks that we can use static variables.
+- `sdc-life.c` — Displays successive generations of Conway's game of Life.
+- `sdc-mandlebrot.c` — ASCII Mandelbrot set.
 - `sdc-random.c` — Generate 500,000 random numbers using rand().
-- `sdc-calls.c` — Demonstrates calling assembler from C.
+- `sdc-static.c` — Checks that we can use static variables.
 
-- `sdc-echo.c` — Display command line arguments.
+
+- `sdc-args.c` — Print command line arguments.
 - `sdc-calendar.c` — Display the calendar for the specified month or year.
+- `sdc-echo.c` — Echo's command line arguments.
 
 The examples were compiled using SDCC version 3.8 and tested on CP/M 2.2.
 
