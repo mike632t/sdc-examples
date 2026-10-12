@@ -18,8 +18,8 @@
  * You  should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>. 
  * 
- * Note - This program requires more stack space than is provided by either 
- * of the standard runtime modules.
+ * Note - Usign  the original calling convention this program will  require 
+ * more stack space than is provided by the standard runtime modules.
  *
  * 08 Oct 26   0.1   - Initial version - MT
  * 
@@ -146,7 +146,7 @@ int main(void)
    i_grid[ROWS / 2][COLUMNS / 2 + 4]     = true;
 
    printf("\033[2J");  /* Clear screen */
-   for (i_generation = 0; i_generation < 2000; i_generation++) 
+   for (i_generation = 0; i_generation < 850; i_generation++) 
    {
       printf("\033[H");
       printf("\nGeneration: %d\n\n", i_generation);
