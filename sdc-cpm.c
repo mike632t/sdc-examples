@@ -27,6 +27,7 @@
  *                   - Rewrote the command line parser - MT
  *                   - Parser now supports new calling convention - MT
  * 08 Oct 26   0,4   - Added getchar() - MT
+ * 12 Oct 26         - Fixed issue with status - MT
  * 
  * ToDo              - Allow  command  line parameters to  be  enclosed  in
  *                     quotes.
@@ -34,8 +35,8 @@
  */
 
 #define  NAME        "sdc-cpm"
-#define  VERSION     "0.3"
-#define  BUILD       "0005"
+#define  VERSION     "0.4"
+#define  BUILD       "0007"
 #define  AUTHOR      "MT"
 #define  COPYRIGHT   (__DATE__ + 7) /* Extract copyright year from date. */
 
@@ -153,20 +154,20 @@ done:          ld	   hl,#CPM$Load+3		; Pointer to argv[0].
 
 #endif
 
-int putchar(int c)
+int putchar(int c_char)
 {
-   if (c == '\n') bdos(BDOS$CON_Output, '\r');
-   bdos(BDOS$CON_Output, c);
+   if (c_char == '\n') bdos(BDOS$CON_Output, '\r');
+   bdos(BDOS$CON_Output, c_char);
    return 0;
 }
 
 int getchar(void)
 {
-   unsigned int i_status;
+   int i_status;
 
    while ((i_status = bdos(BDOS$Direct_IO , 0xFF)) == 0) {} /* Wait until a key is pressed */
 
    if (i_status == Asc$EOF) i_status = EOF;  /* Check for EOF */
-   
+  
    return i_status;
 }
