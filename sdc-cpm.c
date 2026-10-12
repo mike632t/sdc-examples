@@ -28,6 +28,7 @@
  *                   - Parser now supports new calling convention - MT
  * 08 Oct 26   0,4   - Added getchar() - MT
  * 12 Oct 26         - Fixed issue with status - MT
+ *                   - Updated BDOS for new calling convention - MT
  * 
  * ToDo              - Allow  command  line parameters to  be  enclosed  in
  *                     quotes.
@@ -50,8 +51,11 @@ unsigned int bdos(unsigned char c_byte, unsigned int i_word) __naked
    c_byte;
    i_word;
    __asm
-                ld    c,a               ; Move byte in A to C.
-                jp    CPM$BDOS          ; Character already in E.
+               ld    c,a               ; Move byte in A to C.
+               call  CPM$BDOS          ; Character already in E.
+               ld    e,a               ; Return result in DE.
+               ld    d,#0
+               ret
    __endasm;
 }
 
