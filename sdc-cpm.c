@@ -26,9 +26,9 @@
  *                     to determine the correct calling convention - MT
  *                   - Rewrote the command line parser - MT
  *                   - Parser now supports new calling convention - MT
+ * 08 Oct 26   0,4   - Added getchar() - MT
  * 
- * ToDo              - Check BDOS return value.
- *                   - Allow  command  line parameters to  be  enclosed  in
+ * ToDo              - Allow  command  line parameters to  be  enclosed  in
  *                     quotes.
  *
  */
@@ -40,6 +40,7 @@
 #define  COPYRIGHT   (__DATE__ + 7) /* Extract copyright year from date. */
 
 #include "sdc-cpm.h"
+#include "stdio.h"   /* Provides EOF */
 
 #if __SDCCCALL == 1
 
@@ -67,7 +68,10 @@ unsigned int bdos(unsigned char c_byte, unsigned int i_word) __naked
                ld    e,(hl)            ; Save word in DE (low byte hi byte).
                inc   hl               
                ld    d,(hl)           
-               jp    CPM$BDOS          ; Return from BDOS.
+               call  CPM$BDOS          ; Return from BDOS.
+               ld    l,a
+               ld    h,#0
+               ret
    __endasm;
 }
 
@@ -154,4 +158,15 @@ int putchar(int c)
    if (c == '\n') bdos(BDOS$CON_Output, '\r');
    bdos(BDOS$CON_Output, c);
    return 0;
+}
+
+int getchar(void)
+{
+   unsigned int i_status;
+
+   while ((i_status = bdos(BDOS$Direct_IO , 0xFF)) == 0) {} /* Wait until a key is pressed */
+
+   if (i_status == Asc$EOF) i_status = EOF;  /* Check for EOF */
+   
+   return i_status;
 }
