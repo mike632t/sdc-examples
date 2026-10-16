@@ -9,6 +9,6 @@
 # Unignore documentation
 !LICENSE
 !*.md
-
+_notes.md
 
 
