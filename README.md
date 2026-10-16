@@ -27,7 +27,7 @@ Runtime files:
 - `sdc-crt0-args.s` — CP/M runtime with argument parser.
 - `sdc-cpm.c` — Provides the operating system support functions.
 
-Examples:
+Examples using sdc-crt0:
 - `sdc-hello.c` — Of course the first example is "Hello World".
 - `sdc-calls.c` — A random number generator showing how to call assembler.
 - `sdc-getchar.c` — Uses getchar() to read from the keyboard.
@@ -37,10 +37,11 @@ Examples:
 - `sdc-random.c` — Generate 500,000 random numbers using rand().
 - `sdc-static.c` — Checks that we can use static variables.
 
-
+Examples using sdc-crt0-args:
 - `sdc-args.c` — Print command line arguments.
 - `sdc-calendar.c` — Display the calendar for the specified month or year.
 - `sdc-echo.c` — Echo's command line arguments.
+- `sdc-snake.c` — A turn based snake game (requires large stack).
 
 The examples were compiled using SDCC version 3.8 and tested on CP/M 2.2.
 
