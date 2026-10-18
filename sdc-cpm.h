@@ -1,5 +1,5 @@
 /*
- * sdc-bdos.h - interface to CP/M BDOS functions.
+ * sdc-cpm.h - Interface to CP/M BDOS functions.
  *
  * Copyright(C) 2023   MT
  *
@@ -21,6 +21,7 @@
  * 20 Aug 23         - Initial version - MT
  * 26 Sep 26         - Removed function prototypes - MT
  * 07 Oct 26         - Modified and extended defined values - MT
+ * 17 Oct 26         - Fixed some spelling mistakes - MT
  * 
  * To Do             - 
  *
@@ -41,7 +42,7 @@
 #define  Asc$LF            0x0A                 /* <Ctrl/J> - Linefeed. */
 #define  Asc$VT            0x0B                 /* <Ctrl/K> - Vertical tab. */
 #define  Asc$FF            0x0C                 /* <Ctrl/L> - Formfeed. */
-#define  Asc$CR            0x0D                 /* <Ctrl/M> - Carridge return. */
+#define  Asc$CR            0x0D                 /* <Ctrl/M> - Carriage return. */
 #define  Asc$SO            0x0E                 /* <Ctrl/N> */
 #define  Asc$SI            0x0F                 /* <Ctrl/O> */
 #define  Asc$DLE           0x10                 /* <Ctrl/P> */
@@ -56,17 +57,17 @@
 #define  Asc$EOM           0x19                 /* <Ctrl/Y> */
 #define  Asc$EOF           0x1A                 /* <Ctrl/Z> */
 #define  Asc$ESC           0x1B                 /* <Ctrl/[> */
-#define  Asc$FS            0x1C                 /* <Ctrl/\> - File seperator. */
-#define  Asc$GS            0x1D                 /* <Ctrl/]> - Group seperator. */
-#define  Asc$RS            0x1E                 /* <Ctrl/^> - Record seperator. */
-#define  Asc$US            0x1F                 /* <Ctrl/-> - Unit seperator. */
+#define  Asc$FS            0x1C                 /* <Ctrl/\> - File separator. */
+#define  Asc$GS            0x1D                 /* <Ctrl/]> - Group separator. */
+#define  Asc$RS            0x1E                 /* <Ctrl/^> - Record separator. */
+#define  Asc$US            0x1F                 /* <Ctrl/-> - Unit separator. */
                          
 #define  Asc$SP            0x20                 /* Space. */
 #define  Asc$DEL           0x7F                 /* Delete. */
 #define  Asc$AST           0x2A                 /* Asterisk. */
 #define  Asc$SLH           0x2F                 /* Slash. */
 #define  Asc$PT            0x2E                 /* Full stop. */
-#define  Asc$SEP           0x2C                 /* Seperator (comma). */
+#define  Asc$SEP           0x2C                 /* Separator (comma). */
 #define  Asc$ZERO          0x30
 #define  Asc$NINE          0x39
 #define  Asc$EQU           0x3D
