@@ -175,3 +175,61 @@ int getchar(void)
   
    return i_status;
 }
+
+
+#define stdin 0
+typedef int FILE;
+
+char *fgets(char *s_buffer, int i_length, FILE *h_stream) 
+{
+   int i_count = 0;
+   int i_counter = 0;
+   int c_char = '\0';  /* Integer because value  returned from getchar() is an integer (EOF is -1) */
+   char *p_result = s_buffer;  /* Default is to return pointer to buffer */
+
+   if (h_stream == 0)
+   {
+      while (i_count < (i_length - 1)) 
+      {
+         c_char = getchar();
+         if (c_char == Asc$CR || c_char == Asc$LF)  /* Carriage return or linefeed terminate input */
+            break;
+         else if (c_char == EOF)  
+         {
+            if (i_count == 0) p_result = NULL;  /* EOF at start of input returns NULL (leaving buffer unmodified) */
+            break;
+         }
+         else if (c_char == Asc$BS || c_char == Asc$NAK)  /* Back space deletes a single character Ctrl-U all preceding characters */
+         {
+            if (i_count > 0)
+            {
+               if (c_char == Asc$BS) i_counter = 1; else i_counter = i_count;
+               while (i_counter > 0)
+               {
+                  putchar(Asc$BS);
+                  putchar(' ');  /* Erase character on screen */
+                  putchar(Asc$BS);
+                  i_counter--;
+                  s_buffer[--i_count] = Asc$NUL;  /* Erase character from buffer */
+               }
+            }
+         }
+         else
+         {
+            s_buffer[i_count++] = (char)c_char;
+            if (c_char >= Asc$SP && c_char < Asc$DEL) putchar(c_char);
+         }
+      }
+      if (p_result != NULL)
+      {
+         if (c_char != EOF && (i_count < (i_length - 1)))  /* Append newline if space allows and not EOF*/
+            s_buffer[i_count++] = Asc$LF;
+         s_buffer[i_count] = '\0'; /* Append a string terminator */
+      }
+      putchar(Asc$CR);
+      putchar(Asc$LF);
+   }
+   else
+      p_result = NULL;
+   return p_result;
+}
