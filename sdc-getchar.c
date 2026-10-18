@@ -30,10 +30,6 @@
 #define  AUTHOR      "MT"
 #define  COPYRIGHT   (__DATE__ + 7) /* Extract copyright year from date. */
 
-#define  Ctrl_C      032   
-#define  Ctrl_Z      032   
-#define  Ctrl_Z      032   
-
 #include "stdio.h"  /* printf() */
 #include "ctype.h"  /* isprint() */
 
