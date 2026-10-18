@@ -31,9 +31,11 @@ Examples using sdc-crt0:
 - `sdc-hello.c` — Of course the first example is "Hello World".
 - `sdc-calls.c` — A random number generator showing how to call assembler.
 - `sdc-getchar.c` — Uses getchar() to read from the keyboard.
+- `sdc-gets.c` — Uses fgets() to read from the keyboard.
 - `sdc-julia.c` — ASCII Julia set.
 - `sdc-life.c` — Displays successive generations of Conway's game of Life.
 - `sdc-mandlebrot.c` — ASCII Mandelbrot set.
+- `sdc-maze.c` — ASCII Maze generator.
 - `sdc-random.c` — Generate 500,000 random numbers using rand().
 - `sdc-static.c` — Checks that we can use static variables.
 
