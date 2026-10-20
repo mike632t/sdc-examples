@@ -176,10 +176,6 @@ int getchar(void)
    return i_status;
 }
 
-
-#define stdin 0
-typedef int FILE;
-
 char *fgets(char *s_buffer, int i_length, FILE *h_stream) 
 {
    int i_count = 0;
