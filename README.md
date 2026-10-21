@@ -29,11 +29,13 @@ Runtime files:
 
 Examples using sdc-crt0:
 - `sdc-hello.c` — Of course the first example is "Hello World".
+- `sdc-bdos.c` — Calls BDOS to read from console (can't compile with gcc).
 - `sdc-calls.c` — A random number generator showing how to call assembler.
 - `sdc-getchar.c` — Uses getchar() to read from the keyboard.
 - `sdc-gets.c` — Uses fgets() to read from the keyboard.
 - `sdc-julia.c` — ASCII Julia set.
 - `sdc-life.c` — Displays successive generations of Conway's game of Life.
+- `sdc-list.c` — Linked list example.
 - `sdc-mandlebrot.c` — ASCII Mandelbrot set.
 - `sdc-maze.c` — ASCII Maze generator.
 - `sdc-random.c` — Generate 500,000 random numbers using rand().
@@ -43,9 +45,16 @@ Examples using sdc-crt0-args:
 - `sdc-args.c` — Print command line arguments.
 - `sdc-calendar.c` — Display the calendar for the specified month or year.
 - `sdc-echo.c` — Echo's command line arguments.
+
+- `sdc-tree.c` — Binary tree example (requires large stack).
 - `sdc-snake.c` — A turn based snake game (requires large stack).
 
-The examples were compiled using SDCC version 3.8 and tested on CP/M 2.2.
+
+The  different parameter passing conventions used by newer versions of sdcc 
+are handled transparently which allows programs to be compiled without  any
+modifications using either SDCC version 3.8 and 4.2. 
+
+The resulting executable files have been tested using ntvcm and CP/M 2.2.
 
 On 4Mhz Z80 generating the Julia set will take approximately 45 minutes! 
 
