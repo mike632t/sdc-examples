@@ -32,9 +32,9 @@
 ;
 ;** 07 Oct 26         - Increased stack size to 192 bytes - MT
 ;
-;** To Do:            - Move stack to top of TPA so it extends downwards to
-;                       the heap ?
-;                     - Allocate all available space for the heap ?
+;** 21 Oct 26         - Use the default 1024 byte heap - MT
+;
+;** To Do:            - 
 ;
                 .module crt0
 ;
@@ -43,8 +43,6 @@
                 .globl  s__INITIALIZER
                 .globl  s__INITIALIZED
                 .globl  ___sdcc_heap_init
-                .globl  ___sdcc_heap_start
-                .globl  ___sdcc_heap_end
 ;
                 .area   _HEADER (ABS)
                 .org    0x0100
@@ -94,8 +92,4 @@ stack:          .dw     0               ; Storage for CP/M stack pointer.
 ;               .area   _BSS
 ;
                 .area   _HEAP           ; Place heap after data.
-;
-                ___sdcc_heap_start::
-                .ds     8192            ; 8KB Heap allocation
-                ___sdcc_heap_end::
-                ___sdcc_heap::
+
