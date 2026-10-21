@@ -49,7 +49,11 @@
 ;** 07 Oct 26         - Moved command line parser to sdc-cpm.c to allow the
 ;                       compiler to select the calling convention - MT
 ;
-;   To Do:            - 
+;** 21 Oct 26         - Allocate 8192 bytes to the heap - MT
+;
+;   To Do:            - Move stack to top of TPA so it extends downwards to
+;                       the heap ?
+;                     - Allocate all available space for the heap ?
 ;
 ;
 Asc$NUL         .equ    0x00            ; <Ctrl/@> - Null.
@@ -65,13 +69,16 @@ BDOS$PrtStr     .equ    0x09            ; Print a string to CON:.
                 .module crt0
 ;
                 .globl  _main
+                .globl  ___parse
                 .globl  l__INITIALIZER
                 .globl  s__INITIALIZER
                 .globl  s__INITIALIZED
-                .globl  ___parse
                 .globl  ___sdcc_heap_init
+                .globl  ___sdcc_heap
+                .globl  ___sdcc_heap_end
 ;
                 .area   _HEADER (ABS)
+;
                 .org    CPM$Load
 ;
 ;-- Check CPU type (as sdcc requires a Z80).
@@ -124,7 +131,10 @@ done:           ld      (stack),sp      ; Save the stack pointer.
                 .area   _INITIALIZED    ; Global variables.
                 .area   _DATA           ; Data area.
                 .ds     512             ; Stack space 512 bytes.
-stack:          .dw     0
+stack:          .dw     0               ; Storage for CP/M stack pointer.
 ;               .area   _BSS
-                .area   _HEAP           ; Place heap after data.
 ;
+                .area   _HEAP           ; Place heap after data.
+___sdcc_heap::
+                .ds     8192            ; Allocate 8K bytes to the heap.
+___sdcc_heap_end::
