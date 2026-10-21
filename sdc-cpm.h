@@ -135,18 +135,3 @@
 #define  BIOS$Read         0x27                 /* Read sector. */
 #define  BIOS$Write        0x2A                 /* Write sector. */
 #define  BIOS$LST_Stat     0x2D                 /* List output status. */
-
-/* The following should really be defined in stdio.h but they are only used
- * in sdc-cpm.c so it does not matter if they are defined here for now. */
-
-#define stdin 0  
-typedef int FILE;
-
-unsigned int bdos(unsigned char c_byte, unsigned int i_word) __naked;
-
-char *fgets(char *s_buffer, int i_length, FILE *h_stream);
-
-int getchar(void);
-
-int putchar(int c_char);
-
