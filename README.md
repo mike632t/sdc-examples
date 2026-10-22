@@ -46,8 +46,9 @@ Examples using sdc-crt0-args:
 - `sdc-calendar.c` — Display the calendar for the specified month or year.
 - `sdc-echo.c` — Echo's command line arguments.
 
-- `sdc-tree.c` — Binary tree example (requires large stack).
-- `sdc-snake.c` — A turn based snake game (requires large stack).
+- `sdc-compare` — Test integer comparisons using greater than or less than.
+- `sdc-tree.c` — Binary tree example.
+- `sdc-snake.c` — A turn based snake game.
 
 
 The  different parameter passing conventions used by newer versions of sdcc 
