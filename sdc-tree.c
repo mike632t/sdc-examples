@@ -28,11 +28,29 @@
  * 22 Oct 26   0.5   - Added delete to allow nodes to be removed - MT
  *                   - Allow tree to be printed in reverse order, pre-order
  *                     or post-order (as well as in-order) - MT
+ *                   - Define program name and debug macro - MT
  */
+
+#define  NAME        "sdc-tree"
+#define  VERSION     "0.5"
+#define  BUILD       "0007"
+#define  AUTHOR      "MT"
+#define  COPYRIGHT   (__DATE__ + 7) /* Extract copyright year from date */
+
+#define  NODEBUG
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifndef debug /* Don't redefine macro if already defined. */
+#if defined(DEBUG)
+#define debug(code) do {printf("Debug\t: %s line : %d : ", \
+            __FILE__, __LINE__); code;} while(0)
+#else
+#define debug(code)
+#endif
+#endif
 
 struct leaf
 {
