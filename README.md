@@ -96,7 +96,7 @@ type).
 
 I did say this was a minimal runtime environment!
 
-### Compiling a program
+### Usage
 
 Once  the runtime libraries are built you are ready to use them in your own
 programs. 
@@ -114,19 +114,23 @@ use and which programs to compile.
 
 To minimise the size of each program two versions are provided.
 
-- 'sdc-crt0' supports just console output (128 byte stack).
+- 'sdc-crt0' supports just console output (192 byte stack).
 
 - `sdc-crt0-args` passes `argc` and `argv[]` to `main()` (512 byte stack).
 
-Programs  that require a specific runtime should be built before those that
-do not.
 
-The following commands use make to build two programs including support for 
-argument passing using `argc` and `argv[]` and then builds the rest.
+### Building
+
+Programs  that require a specific runtime should be built before those that
+do not. This includes any programs that require a larger stack or more heap
+space and those that need parse command line arguments. 
+
+The following commands use make to build all the example programs.
 ```
 make clean 
 
-make RUNTIME=sdc-crt0-args sdc-calendar sdc-echo
+make RUNTIME=sdc-crt0-args sdc-args sdc-calendar sdc-echo 
+make RUNTIME=sdc-crt0-args sdc-compare sdc-tree sdc-snake
 
 make
 ```
